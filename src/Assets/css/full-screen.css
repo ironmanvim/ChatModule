@@ -1,0 +1,52 @@
+.full-screen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /*border: 1px solid red;*/
+    background: rgba(0,0,0,0.8);
+    min-width: 1000px;
+    min-height: 500px;
+}
+
+.full-screen .exit {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    display: inline-block;
+    /*border: 1px solid red;*/
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.full-screen .content {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*border: 1px solid red;*/
+}
+
+.content .image-view {
+    position: absolute;
+    /*border: 1px solid red;*/
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.content .image-view img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.content .video-view {
+
+}
