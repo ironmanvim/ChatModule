@@ -2,21 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/ironmanvim.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Assets/css/chat.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Assets/css/full-screen.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Assets/images/Avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Assets/images/trial.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/Chat.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/FullScreenView.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/Notify.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/oldchat.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/css/chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/css/chat.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,10 +39,13 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
+    <key name="OPEN_URL_DIALOG">
+      <recent name="https://github.com/ironmanvim/ChatModule" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Assets/videos" />
       <recent name="$PROJECT_DIR$/src/Assets" />
@@ -108,8 +99,16 @@
       <workItem from="1577431720169" duration="24984000" />
       <workItem from="1577477766164" duration="7901000" />
       <workItem from="1577527924646" duration="11785000" />
-      <workItem from="1577603332925" duration="8326000" />
+      <workItem from="1577603332925" duration="9550000" />
     </task>
+    <task id="LOCAL-00001" summary="Chat v1.0.0 Commit">
+      <created>1577612140637</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1577612140637</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,5 +126,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Chat v1.0.0 Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chat v1.0.0 Commit" />
   </component>
 </project>

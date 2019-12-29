@@ -275,6 +275,7 @@
 .chat-message_delivery_status {
     display: inline-block;
     margin-left: 5px;
+    margin-right: 5px;
 }
 
 .chat-message_by {

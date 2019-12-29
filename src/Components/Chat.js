@@ -168,13 +168,44 @@ class ChatList extends React.Component {
                     lastSeen: listItem.lastSeen,
                     desc: (() => {
                         let {messages} = listItem;
+                        let message = messages[messages.length - 1];
 
-                        if (messages[messages.length - 1].type === "text") {
-                            return `${messages[messages.length - 1].data}`;
-                        } else if (messages[messages.length - 1].type === "image") {
-                            return <span><i className="far fa-file-image"> </i> image</span>;
-                        } else if (messages[messages.length - 1].type === "video") {
-                            return <span><i className="far fa-file-video"> </i> video</span>;
+                        let messageDeliveryStatus = null;
+
+                        if (message.read === 0) {
+                            messageDeliveryStatus = <i className="far fa-clock"> </i>;
+                        } else if (message.read === 1) {
+                            messageDeliveryStatus = <i className="fas fa-check"> </i>
+                        } else if (message.read === 2) {
+                            messageDeliveryStatus = <i className="fas fa-check-double"> </i>
+                        }
+
+                        if (message.type === "text") {
+                            return (
+                                <span>
+                                    {
+                                        message.by === 0 &&
+                                        <div className="chat-message_delivery_status">
+                                            {messageDeliveryStatus}
+                                        </div>
+                                    }
+                                    {message.data}
+                                </span>
+                            );
+                        } else if (message.type === "image") {
+                            return (
+                                <span>
+                                    {message.by === 0 && messageDeliveryStatus}
+                                    <i className="far fa-file-image"> </i> image
+                                </span>
+                            );
+                        } else if (message.type === "video") {
+                            return (
+                                <span>
+                                    {message.by === 0 && messageDeliveryStatus}
+                                    <i className="far fa-file-video"> </i> video
+                                </span>
+                            );
                         }
                     })(),
                 };
