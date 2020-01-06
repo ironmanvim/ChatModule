@@ -2,7 +2,7 @@ import React from "react";
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 
-import "../Assets/css/full-screen.css";
+import "./Assets/css/full-screen.css";
 
 export default class FullScreenView extends React.Component {
     state = {

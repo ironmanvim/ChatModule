@@ -1,10 +1,14 @@
 .chat {
-    /*border: 1px solid red;*/
     position: absolute;
+    /*height: 100%;*/
+    /*flex: 1;*/
+    /*border: 1px solid red;*/
+    background: white;
+    /*width: 100%;*/
     top: 0;
     left: 0;
-    bottom: 0;
     right: 0;
+    bottom: 0;
 }
 
 /* -- Chat List -- */
@@ -213,13 +217,15 @@
 
 .chat-load_previous, .chat-unread_messages {
     /*border: 1px solid red;*/
-    display: block;
     padding: 5px 100px;
     border-radius: 5px;
     background: #eeeeee;
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 10px;
+    text-align: center;
+    align-self: center;
+    cursor: default;
 }
 
 .chat-load_previous {
@@ -228,16 +234,18 @@
 
 .chat-date_marker {
     /*border: 1px solid red;*/
-    display: block;
+    /*display: inline-block;*/
     padding: 5px 100px;
     border-radius: 5px;
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 10px;
+    text-align: center;
+    align-self: center;
+    background: #dfeecd;
 }
 
 .chat-line {
-    /*border: 1px solid blue;*/
     display: flex;
     flex-direction: column;
     margin-top: 10px;
@@ -253,6 +261,7 @@
     text-align: left;
     overflow-wrap: break-word;
     word-wrap: break-word;
+    white-space: pre-wrap;
     position: relative;
 }
 
@@ -371,6 +380,14 @@
     border-top-width: 0;
 }
 
+.chat-url_metadata {
+    /*border: 1px solid red;*/
+    display: flex;
+    /*height: 500px;*/
+    /*padding: 20px;*/
+    margin-bottom: 5px;
+}
+
 .chat-input {
     position: absolute;
     bottom: 0;
@@ -386,10 +403,16 @@
     box-sizing: border-box;
 }
 
-.chat-input input[type=text] {
+.chat-message-input {
+    position: relative;
+    width: 500px;
+    display: inline-flex;
+}
+
+.chat-input .message_input {
     border: 1px solid cornflowerblue;
     padding: 5px;
-    width: 500px;
+    flex: 1;
     min-width: 20px;
 }
 
@@ -403,6 +426,15 @@
 
 .emoji {
     position: relative;
+}
+
+.chat-input-link-metadata {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    /*display: none;*/
+    /*height: 100px;*/
 }
 
 /* -- Chat Body -- */

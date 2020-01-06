@@ -1,11 +1,13 @@
 import React from "react";
-import Notify from './Notify';
-import PropTypes from 'prop-types';
+import Notify from '../Notify';
+import * as PropTypes from 'prop-types';
 import {Picker as EmojiPicker} from 'emoji-mart';
 import uuid from 'uuid';
+import URLMetadata from './URLMetadata';
+import * as utils from '../../js/utils';
 
-import '../Assets/css/chat.css';
-import '../Assets/fontawesome/css/all.css';
+import './Assets/css/chat.css';
+import '../../Assets/fontawesome/css/all.css';
 import 'emoji-mart/css/emoji-mart.css';
 
 
@@ -61,13 +63,7 @@ class ChatListItem extends React.Component {
     getStatusWithTimestamp = () => {
         const {time} = this.props;
 
-        return (new Date(time)).toDateString();
-    };
-
-    getOnlineStatus = () => {
-        const {time} = this.props;
-
-        return Date.now() - time < 5000;
+        return utils.getTimeAgo(time);
     };
 
     render() {
@@ -84,8 +80,8 @@ class ChatListItem extends React.Component {
                 <div className="chat-list-item-image">
                     <img src={this.props.avatar} alt=""/>
                     {
-                        this.getOnlineStatus() ?
-                            <Notify size={"8"} position={"bottom-right"} color="lawngreen"/> : null
+                        this.getStatusWithTimestamp() === "online" &&
+                        <Notify size={"8"} position={"bottom-right"} color="lawngreen"/>
                     }
                 </div>
                 <div className="chat-list-item-info">
@@ -101,10 +97,10 @@ class ChatListItem extends React.Component {
                         {this.getStatusWithTimestamp()}
                     </div>
                     {
-                        this.props.unreadMsgCount > 0 ?
-                            <div className="chat-list-item-msg_count">
-                                {this.props.unreadMsgCount}
-                            </div> : null
+                        this.props.unreadMsgCount > 0 &&
+                        <div className="chat-list-item-msg_count">
+                            {this.props.unreadMsgCount}
+                        </div>
                     }
                 </div>
             </div>
@@ -114,7 +110,7 @@ class ChatListItem extends React.Component {
 
 class ChatListItems extends React.Component {
     static propTypes = {
-        filteredList: PropTypes.array,
+        list: PropTypes.array,
         currentChatId: PropTypes.number,
         updateCurrentChat: PropTypes.func,
     };
@@ -122,7 +118,7 @@ class ChatListItems extends React.Component {
     render() {
         return (
             <div className="chat-list-items">
-                {this.props.filteredList.map(listItem =>
+                {this.props.list.map(listItem =>
                     <ChatListItem
                         key={listItem.id}
                         id={listItem.id}
@@ -139,6 +135,24 @@ class ChatListItems extends React.Component {
                 )}
             </div>
         );
+    }
+}
+
+class MessageDeliveryStatusIcons extends React.Component {
+    static propTypes = {
+        status: PropTypes.number,
+    };
+
+    render() {
+        let messageDeliveryStatus = null;
+        if (this.props.status === 0) {
+            messageDeliveryStatus = <i className="far fa-clock"> </i>;
+        } else if (this.props.status === 1) {
+            messageDeliveryStatus = <i className="fas fa-check"> </i>
+        } else if (this.props.status === 2) {
+            messageDeliveryStatus = <i className="fas fa-check-double"> </i>
+        }
+        return messageDeliveryStatus;
     }
 }
 
@@ -170,39 +184,31 @@ class ChatList extends React.Component {
                         let {messages} = listItem;
                         let message = messages[messages.length - 1];
 
-                        let messageDeliveryStatus = null;
-
-                        if (message.read === 0) {
-                            messageDeliveryStatus = <i className="far fa-clock"> </i>;
-                        } else if (message.read === 1) {
-                            messageDeliveryStatus = <i className="fas fa-check"> </i>
-                        } else if (message.read === 2) {
-                            messageDeliveryStatus = <i className="fas fa-check-double"> </i>
-                        }
+                        let messageDeliveryStatus = (
+                            message.by === 0 &&
+                            <div className="chat-message_delivery_status">
+                                <MessageDeliveryStatusIcons status={message.read}/>
+                            </div>
+                        );
 
                         if (message.type === "text") {
                             return (
                                 <span>
-                                    {
-                                        message.by === 0 &&
-                                        <div className="chat-message_delivery_status">
-                                            {messageDeliveryStatus}
-                                        </div>
-                                    }
+                                    {messageDeliveryStatus}
                                     {message.data}
                                 </span>
                             );
                         } else if (message.type === "image") {
                             return (
                                 <span>
-                                    {message.by === 0 && messageDeliveryStatus}
+                                    {messageDeliveryStatus}
                                     <i className="far fa-file-image"> </i> image
                                 </span>
                             );
                         } else if (message.type === "video") {
                             return (
                                 <span>
-                                    {message.by === 0 && messageDeliveryStatus}
+                                    {messageDeliveryStatus}
                                     <i className="far fa-file-video"> </i> video
                                 </span>
                             );
@@ -219,7 +225,7 @@ class ChatList extends React.Component {
                     onSearch={this.onSearch}
                 />
                 <ChatListItems
-                    filteredList={this.getFilteredList()}
+                    list={this.getFilteredList()}
                     currentChatId={this.props.chat.currentChatId}
                     updateCurrentChat={this.props.updateCurrentChat}
                 />
@@ -245,13 +251,7 @@ class ChatHeader extends React.Component {
     getStatusWithTimestamp = () => {
         const {time} = this.props;
 
-        return (new Date(time)).toDateString();
-    };
-
-    getOnlineStatus = () => {
-        const {time} = this.props;
-
-        return Date.now() - time < 5000;
+        return utils.getTimeAgo(time);
     };
 
     componentWillUnmount() {
@@ -264,7 +264,7 @@ class ChatHeader extends React.Component {
                 <div className="chat-list-item-image">
                     <img src={this.props.avatar} alt=""/>
                     {
-                        this.getOnlineStatus() ?
+                        this.getStatusWithTimestamp() === "online" ?
                             <Notify size={"8"} position={"bottom-right"} color="lawngreen"/> : null
                     }
                 </div>
@@ -301,18 +301,33 @@ class ChatLine extends React.Component {
     showFullScreen = () => {
         const {message} = this.props;
 
-        if (message.type === 'image') {
-            this.context.showFullScreen(message.data.image, 'image');
-        } else if (message.type === 'video') {
-            this.context.showFullScreen(message.data.video, 'video');
+        switch (message.type) {
+            case 'image': // noinspection JSDeprecatedSymbols
+                this.context.showFullScreen(message.data.image, 'image');
+                break;
+            case 'video': // noinspection JSDeprecatedSymbols
+                this.context.showFullScreen(message.data.video, 'video');
+                break;
+            default:
         }
     };
 
     getTime = () => {
         const {message: {time}} = this.props;
-        let currentTime = new Date(time);
+        return utils.getFormattedTime(time);
+    };
 
-        return `${currentTime.getHours()}:${currentTime.getMinutes()}`;
+    getConvertedMessage = (text) => {
+        let textAndLinks = utils.linksSplitter(text);
+        let link = null;
+
+        return [textAndLinks.map(item => {
+            if (item.type === "link") {
+                link = item.word;
+                return <a href={item.word}>{item.word}</a>;
+            }
+            return item.word;
+        }), link];
     };
 
     render() {
@@ -320,42 +335,48 @@ class ChatLine extends React.Component {
 
         let data = null;
 
-        if (message.type === "text") {
-            data = message.data;
-        } else if (message.type === "image") {
-            data = (
-                <div>
-                    <div className="chat-line-image" onClick={this.showFullScreen}>
-                        <img src={message.data.image} alt=""/>
+        switch (message.type) {
+            case "text":
+                let linkAndMessage = this.getConvertedMessage(message.data);
+                data = (
+                    <div>
+                        {
+                            !!linkAndMessage[1] &&
+                            <div className="chat-url_metadata" onClick={this.showFullScreen}>
+                                <URLMetadata url={linkAndMessage[1]}/>
+                            </div>
+                        }
+                        {linkAndMessage[0]}
                     </div>
-                    {message.data.caption}
-                </div>
-            );
-        } else if (message.type === "video") {
-            data = (
-                <div>
-                    <div className="chat-line-video" onClick={this.showFullScreen}>
-                        <img src={message.data.thumbnail} alt=""/>
-                        <div className="chat-video-play-icon">
-                            <i className="fa fa-play"> </i>
+                );
+                break;
+            case "image":
+                data = (
+                    <div>
+                        <div className="chat-line-image" onClick={this.showFullScreen}>
+                            <img src={message.data.image} alt=""/>
                         </div>
+                        {this.getConvertedMessage(message.data.caption)}
                     </div>
-                    {message.data.caption}
-                </div>
-            );
+                );
+                break;
+            case "video":
+                data = (
+                    <div>
+                        <div className="chat-line-video" onClick={this.showFullScreen}>
+                            <img src={message.data.thumbnail} alt=""/>
+                            <div className="chat-video-play-icon">
+                                <i className="fa fa-play"> </i>
+                            </div>
+                        </div>
+                        {this.getConvertedMessage(message.data.caption)}
+                    </div>
+                );
+                break;
+            default:
         }
 
         let message_by = message.by === 0 ? "me" : "you";
-
-        let messageDeliveryStatus = null;
-
-        if (message.read === 0) {
-            messageDeliveryStatus = <i className="far fa-clock"> </i>;
-        } else if (message.read === 1) {
-            messageDeliveryStatus = <i className="fas fa-check"> </i>
-        } else if (message.read === 2) {
-            messageDeliveryStatus = <i className="fas fa-check-double"> </i>
-        }
 
         return (
             <div className="chat-line">
@@ -370,16 +391,31 @@ class ChatLine extends React.Component {
                     <div className={`chat-message-time ${message_by}`}>
                         {this.getTime()}
                         {
-                            message_by === "me" &&
+                            message.by === 0 &&
                             <div className="chat-message_delivery_status">
-                                {messageDeliveryStatus}
+                                <MessageDeliveryStatusIcons status={message.read}/>
                             </div>
                         }
                     </div>
                 </div>
             </div>
         );
+    }
+}
 
+class DateMarker extends React.Component {
+    static propTypes = {
+        date: PropTypes.number,
+    };
+
+    render() {
+        return (
+            <div className="chat-line">
+                <div className="chat-date_marker">
+                    {utils.getFormattedDate(this.props.date)}
+                </div>
+            </div>
+        );
     }
 }
 
@@ -408,20 +444,22 @@ class ChatContent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.previousChatUpdate) {
-            setTimeout(() => {
-                if (this.unreadPointer) {
-                    this.unreadPointer.scrollIntoView({
-                        behavior: "smooth"
-                    });
-                } else {
-                    this.endPointer.scrollIntoView({
-                        behavior: "smooth"
-                    });
-                }
-            }, 1000 / 60);
+        if (!utils.deepCompare(prevProps, this.props)) {
+            if (!this.previousChatUpdate) {
+                setTimeout(() => {
+                    if (this.unreadPointer) {
+                        this.unreadPointer.scrollIntoView({
+                            behavior: "smooth"
+                        });
+                    } else {
+                        this.endPointer.scrollIntoView({
+                            behavior: "smooth"
+                        });
+                    }
+                }, 1000 / 60);
+            }
+            this.previousChatUpdate = false;
         }
-        this.previousChatUpdate = false;
     }
 
     UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
@@ -444,44 +482,42 @@ class ChatContent extends React.Component {
     createMessagesWithDateObjects = () => {
         let {messages} = this.props;
 
-        let returnMessages = [];
-        let currentDate = 0;
+        return messages.reduce((accumulator, currentMessage) => {
+            let {messages, currentDate} = accumulator;
+            let newDate = new Date(currentMessage.time);
 
-        for (let i = 0; i < messages.length; i++) {
-            let newDate = new Date(messages[i].time);
-
-            if (!messages[i].time
-                || (currentDate !== 0
-                    && currentDate.getFullYear() === newDate.getFullYear()
+            if (!currentMessage.time
+                || (currentDate.getFullYear() === newDate.getFullYear()
                     && currentDate.getMonth() === newDate.getMonth()
                     && currentDate.getDate() === newDate.getDate())) {
             } else {
-                returnMessages.push({
-                    dateMarker: messages[i].time,
+                messages.push({
+                    dateMarker: currentMessage.time,
                 });
-                currentDate = newDate;
+                accumulator.currentDate = newDate;
             }
-            returnMessages.push(messages[i]);
-        }
+            accumulator.messages.push(currentMessage);
 
-        return returnMessages;
-    };
-
-    getDate = (time) => {
-        let currentTime = new Date(time);
-
-        return `${currentTime.getDate()}/${currentTime.getMonth()}/${currentTime.getFullYear()}`;
+            return accumulator;
+        }, {
+            messages: [],
+            currentDate: new Date(0),
+        }).messages;
     };
 
     render() {
         const messages = this.createMessagesWithDateObjects();
 
         return (
-            <div className="chat-content">
+            <div className="chat-content" onScroll={(event) => {
+                console.log(event.target.scrollTop);
+            }}>
                 {
                     this.props.hasPreviousChat &&
-                    <div className="chat-load_previous" onClick={this.loadPreviousChat}>
-                        Load Previous
+                    <div className="chat-line">
+                        <div className="chat-load_previous" onClick={this.loadPreviousChat}>
+                            Load Previous
+                        </div>
                     </div>
                 }
                 {
@@ -490,22 +526,25 @@ class ChatContent extends React.Component {
                             return (
                                 <div
                                     key="unreadPointer"
-                                    className="chat-unread_messages"
-                                    ref={(div) => {
-                                        this.unreadPointer = div;
-                                    }}
+                                    className="chat-line"
                                 >
-                                    Unread Messages
+                                    <div
+                                        className="chat-unread_messages"
+                                        ref={(div) => {
+                                            this.unreadPointer = div;
+                                        }}
+                                    >
+                                        Unread Messages
+                                    </div>
                                 </div>
                             )
-                        } else if (message.dateMarker) {
+                        }
+                        if (message.dateMarker) {
                             return (
-                                <div
-                                    key={`Date-${message.dateMarker}`}
-                                    className="chat-date_marker"
-                                >
-                                    {this.getDate(message.dateMarker)}
-                                </div>
+                                <DateMarker
+                                    key={`date-${message.dateMarker}`}
+                                    date={message.dateMarker}
+                                />
                             )
                         }
                         return (
@@ -551,18 +590,47 @@ class EmojiPanelButton extends React.Component {
                 {this.props.children}
             </button>
                 {
-                    this.state.showEmojiPanel ?
-                        <EmojiPicker
-                            set='google'
-                            style={{
-                                position: "absolute",
-                                bottom: "30px",
-                                right: "0",
-                            }}
-                            onSelect={onEmojiSelect}
-                        /> : null
+                    this.state.showEmojiPanel &&
+                    <EmojiPicker
+                        set='google'
+                        style={{
+                            position: "absolute",
+                            bottom: "30px",
+                            right: "0",
+                        }}
+                        onSelect={onEmojiSelect}
+                    />
                 }
             </span>
+        );
+    }
+}
+
+class MessageInputWithURLMetadata extends React.Component {
+    static propTypes = {
+        reference: PropTypes.func,
+        message: PropTypes.string,
+        onChange: PropTypes.func,
+        link: PropTypes.string,
+    };
+
+    render() {
+        return (
+            <div className="chat-message-input">
+                <input
+                    type="text"
+                    onChange={this.props.onChange}
+                    value={this.props.message}
+                    ref={(inp) => this.props.reference(inp)}
+                    className="message_input"
+                />
+                {
+                    !!this.props.link &&
+                    <div className="chat-input-link-metadata">
+                        <URLMetadata key={this.props.link} url={this.props.link}/>
+                    </div>
+                }
+            </div>
         );
     }
 }
@@ -575,18 +643,25 @@ class ChatInput extends React.Component {
     state = {
         message: "",
         type: "",
+        link: null,
+    };
+
+    getLink = text => {
+        let link = utils.linksSplitter(text).lastFind(item => item.type === "link");
+        return link ? link.word : null;
     };
 
     onMessageInput = ({target: {value: message}}) => {
         this.setState({
             message,
             type: "text",
+            link: this.getLink(message),
         });
     };
 
     onMessageSubmit = (event) => {
         event.preventDefault();
-        if (this.state.message === "") {
+        if (this.state.message.match(utils.onlySpacesRegex)) {
             return;
         }
         const {updateMessage} = this.props;
@@ -603,6 +678,7 @@ class ChatInput extends React.Component {
         this.setState({
             message: "",
             type: "",
+            link: null,
         });
 
         updateMessage(message);
@@ -620,11 +696,11 @@ class ChatInput extends React.Component {
         return (
             <form onSubmit={this.onMessageSubmit}>
                 <div className="chat-input">
-                    <input
-                        type="text"
+                    <MessageInputWithURLMetadata
+                        message={this.state.message}
+                        reference={(inp) => this.messageInput = inp}
                         onChange={this.onMessageInput}
-                        value={this.state.message}
-                        ref={(inp) => this.messageInput = inp}
+                        link={this.state.link}
                     />
                     <button type="submit" className="button"><i className="far fa-paper-plane"> </i></button>
                     <button type="button" className="button"><i className="fas fa-paperclip"> </i></button>
@@ -660,8 +736,8 @@ class ChatBody extends React.Component {
         return (
             <div className="chat-body">
                 {
-                    currentChatId ?
-                        <span>
+                    !!currentChatId &&
+                    <span>
                         <ChatHeader
                             name={currentChat.name}
                             time={currentChat.lastSeen}
@@ -679,7 +755,7 @@ class ChatBody extends React.Component {
                         <ChatInput
                             updateMessage={this.updateMessage}
                         />
-                    </span> : null
+                    </span>
                 }
             </div>
         )
@@ -696,16 +772,12 @@ export default class Chat extends React.Component {
         loadPreviousChat: PropTypes.func,
     };
 
-    updateCurrentChat = (id) => {
-        this.props.updateCurrentChat(id);
-    };
-
     render() {
         return (
             <div className="chat">
                 <ChatList
                     chat={this.props.chat}
-                    updateCurrentChat={this.updateCurrentChat}
+                    updateCurrentChat={this.props.updateCurrentChat}
                 />
                 <ChatBody
                     chat={this.props.chat}

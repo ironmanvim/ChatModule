@@ -1,0 +1,71 @@
+.metadata {
+    /*border: 1px solid red;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*height: 100px;*/
+    /*width: 250px;*/
+    /*background: cornflowerblue;*/
+    /*min-width: 200px;*/
+    /*padding: 30px;*/
+    font-size: 10pt;
+    /*max-height: 300px;*/
+    width: 100%;
+    background: #b0ee9f;
+    color: black;
+}
+
+.metadata-loading {
+    /*border: 1px solid red;*/
+    align-self: center;
+}
+
+.metadata-data {
+    /*border: 1px solid blue;*/
+    display: flex;
+    flex-direction: row;
+    border-left: 3px solid #73ee5b;
+
+}
+
+.metadata-favicon {
+    /*border: 1px solid green;*/
+    padding: 5px;
+    min-width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.metadata-favicon img {
+    width: 100%;
+}
+
+.metadata-info {
+    /*border: 1px solid red;*/
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    /*overflow: hidden;   */
+}
+
+.metadata-title {
+    /*border: 1px solid purple;*/
+    flex: 1;
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+    padding: 5px;
+}
+
+.metadata-desc {
+    /*border: 1px solid black;*/
+    /*display: flex;*/
+    padding: 5px;
+    text-align: left;
+    overflow: hidden;
+    max-height: 200px;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

@@ -1,9 +1,10 @@
 import React from 'react';
-import Chat from './Components/Chat';
+import Chat from './Components/Chat/Chat';
+import URLMetadata from './Components/Chat/URLMetadata';
 import uuid from 'uuid';
 
 import './App.css';
-import FullScreenView from "./Components/FullScreenView";
+import FullScreenView from "./Components/FullScreenView/FullScreenView";
 
 class App extends React.Component {
     state = {
@@ -205,7 +206,7 @@ class App extends React.Component {
                                 return {
                                     ...listItem,
                                     messages: listItem.messages.map(message => {
-                                        if(message_id === message.id) {
+                                        if (message_id === message.id) {
                                             return {
                                                 ...message,
                                                 read: 1,
@@ -225,8 +226,8 @@ class App extends React.Component {
 
     render() {
         return (
-            <FullScreenView>
-                <div className="App">
+            <div className="App">
+                <FullScreenView>
                     <Chat
                         chat={this.state.chat}
                         updateCurrentChat={this.updateCurrentChat}
@@ -235,8 +236,9 @@ class App extends React.Component {
                         removeUnreadPointer={this.removeUnreadPointer}
                         loadPreviousChat={this.loadPreviousChat}
                     />
-                </div>
-            </FullScreenView>
+                </FullScreenView>
+                {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
+            </div>
         );
     }
 }
