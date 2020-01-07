@@ -40,9 +40,23 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
     "emoji-mart": "^2.11.2",
     "gh-pages": "^2.1.1",
     "react-router-dom": "^5.1.2"
   },
-  "homepage": "https://ironmanvim.github.io/ChatModule"
+  "homepage": "https://ironmanvim.github.io/ChatModule",
+  "bit": {
+    "env": {
+      "compiler": "bit.envs/compilers/react@1.0.11"
+    },
+    "componentsDefaultDirectory": "Components/{name}",
+    "packageManager": "npm"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0",
+    "styles-components": ">=4.0.0",
+    "@storybook/react": ">=5.2.0"
+  }
 }

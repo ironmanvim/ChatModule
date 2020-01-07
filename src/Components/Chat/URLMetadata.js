@@ -1,7 +1,7 @@
 import React from "react";
 import urlMetadata from 'url-metadata';
 import ReactLoading from 'react-loading';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 
 import './Assets/css/metadata.css';
 

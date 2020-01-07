@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.bitmap" beforeDir="false" afterPath="$PROJECT_DIR$/.bitmap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Chat/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/Chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Chat/URLMetadata.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/URLMetadata.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,12 +28,16 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1VSonPCLptCp6YQac5O2w1IuhUL" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JavaScript&#10;HTML" />
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Components/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bit-react-tutorial" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -48,18 +54,18 @@
     <key name="OPEN_URL_DIALOG">
       <recent name="https://github.com/ironmanvim/ChatModule" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/Components/js" />
-      <recent name="$PROJECT_DIR$/src/Components" />
-      <recent name="$PROJECT_DIR$/src/Components/Chat/Assets/css" />
-      <recent name="$PROJECT_DIR$/src/Assets/videos" />
-      <recent name="$PROJECT_DIR$/src/Assets" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/Components/FullScreenView/Assets/css" />
       <recent name="$PROJECT_DIR$/src/Components/FullScreenView" />
       <recent name="$PROJECT_DIR$/src/Components/Chat" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Components/FullScreenView" />
+      <recent name="$PROJECT_DIR$/src/Components/Chat" />
+      <recent name="$PROJECT_DIR$/src/Components/js" />
+      <recent name="$PROJECT_DIR$/src/Components" />
+      <recent name="$PROJECT_DIR$/src/Components/Chat/Assets/css" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -74,8 +80,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="npm.npm start">
+  <component name="RunManager" selected="Node.js.scratch.js">
     <configuration name="Debug Application" type="JavascriptDebugType" uri="http://localhost:3000">
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$APPLICATION_CONFIG_DIR$/scratches/scratch.js" working-dir="$APPLICATION_CONFIG_DIR$/scratches/">
       <method v="2" />
     </configuration>
     <configuration name="npm start" type="js.build_tools.npm">
@@ -88,6 +97,11 @@
       <envs />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.scratch.js" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -121,7 +135,8 @@
       <workItem from="1578290119201" duration="2812000" />
       <workItem from="1578335419756" duration="1125000" />
       <workItem from="1578339889087" duration="4295000" />
-      <workItem from="1578371226206" duration="4407000" />
+      <workItem from="1578371226206" duration="9589000" />
+      <workItem from="1578383947439" duration="9030000" />
     </task>
     <task id="LOCAL-00001" summary="Chat v1.0.0 Commit">
       <created>1577612140637</created>
@@ -144,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578290237322</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Chat updated to save scrollPositions and newMessageScrolling updated">
+      <created>1578376741120</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1578376741120</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,9 +186,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Chat v1.0.0 Commit" />
     <MESSAGE value="ChatListItem Updated for MessageDeliveryStatus" />
     <MESSAGE value="Component Updated to modules" />
-    <option name="LAST_COMMIT_MESSAGE" value="Component Updated to modules" />
+    <MESSAGE value="Chat updated to save scrollPositions and newMessageScrolling updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chat updated to save scrollPositions and newMessageScrolling updated" />
   </component>
 </project>

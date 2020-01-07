@@ -1,10 +1,9 @@
 import React from 'react';
-import Chat from './Components/Chat/Chat';
-import URLMetadata from './Components/Chat/URLMetadata';
+import Chat from './Components/Chat';
 import uuid from 'uuid';
 
 import './App.css';
-import FullScreenView from "./Components/FullScreenView/FullScreenView";
+import FullScreenView from "./Components/FullScreenView";
 
 class App extends React.Component {
     state = {

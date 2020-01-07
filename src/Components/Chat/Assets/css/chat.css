@@ -1,14 +1,8 @@
 .chat {
-    position: absolute;
-    /*height: 100%;*/
-    /*flex: 1;*/
+    position: relative;
+    height: 100%;
     /*border: 1px solid red;*/
     background: white;
-    /*width: 100%;*/
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
 }
 
 /* -- Chat List -- */

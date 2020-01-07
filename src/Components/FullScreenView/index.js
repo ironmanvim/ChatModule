@@ -1,6 +1,6 @@
 import React from "react";
 import ReactPlayer from 'react-player';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 
 import "./Assets/css/full-screen.css";
 
