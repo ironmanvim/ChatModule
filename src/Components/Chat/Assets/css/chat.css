@@ -33,6 +33,7 @@
     right: 0;
     height: 70px;
     border-bottom: 1px dotted gray;
+    border-right: 1px dotted gray;
     box-sizing: border-box;
 
 }
@@ -74,6 +75,7 @@
     overflow: auto;
     padding-left: 5px;
     padding-right: 5px;
+    border-right: 1px dotted gray;
 }
 
 .chat-list-item {
@@ -179,7 +181,7 @@
     left: 300px;
     right: 0;
     bottom: 0;
-    border-left: 1px dotted gray;
+    /*border-left: 1px dotted gray;*/
 }
 
 .chat-header {

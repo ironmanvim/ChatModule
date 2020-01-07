@@ -427,44 +427,44 @@ class ChatContent extends React.Component {
         loadPreviousChat: PropTypes.func,
         hasPreviousChat: PropTypes.bool,
         chatType: PropTypes.string,
+        updateScrollerPosition: PropTypes.func,
+        scrollerPosition: PropTypes.number,
+        newMessageByMe: PropTypes.bool,
+        cleanNewMessageByMe: PropTypes.func,
     };
 
     componentDidMount() {
-        setTimeout(() => {
-            if (this.unreadPointer) {
-                this.unreadPointer.scrollIntoView({
-                    behavior: "smooth"
-                });
+        if (this.unreadPointer) {
+            this.unreadPointer.scrollIntoView();
+        } else {
+            let {scrollerPosition} = this.props;
+            if (scrollerPosition) {
+                this.chatContent.scrollTop = scrollerPosition;
             } else {
-                this.endPointer.scrollIntoView({
-                    behavior: "smooth"
-                });
+                this.endPointer.scrollIntoView();
             }
-        }, 1000 / 60);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!utils.deepCompare(prevProps, this.props)) {
-            if (!this.previousChatUpdate) {
-                setTimeout(() => {
-                    if (this.unreadPointer) {
-                        this.unreadPointer.scrollIntoView({
-                            behavior: "smooth"
-                        });
-                    } else {
-                        this.endPointer.scrollIntoView({
-                            behavior: "smooth"
-                        });
-                    }
-                }, 1000 / 60);
-            }
-            this.previousChatUpdate = false;
         }
     }
 
-    UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
-        if (this.unreadPointer) {
-            this.props.removeUnreadPointer(this.props.currentChatId);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.previousChatUpdate) {
+            this.chatContent.scrollTop = this.chatContent.scrollHeight - snapshot.previousScrollHeight;
+            this.previousChatUpdate = false;
+            if (this.unreadPointer) {
+                this.props.removeUnreadPointer(this.props.currentChatId);
+            }
+        } else if (this.props.newMessageByMe) {
+            this.endPointer.scrollIntoView();
+            this.props.cleanNewMessageByMe();
+            if (this.unreadPointer) {
+                this.props.removeUnreadPointer(this.props.currentChatId);
+            }
+        }
+    }
+
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        return {
+            previousScrollHeight: this.chatContent.scrollHeight,
         }
     }
 
@@ -472,11 +472,14 @@ class ChatContent extends React.Component {
         if (this.unreadPointer) {
             this.props.removeUnreadPointer(this.props.currentChatId);
         }
+        this.props.updateScrollerPosition(this.chatContent.scrollTop, this.props.currentChatId);
     }
 
-    loadPreviousChat = () => {
-        this.previousChatUpdate = true;
-        this.props.loadPreviousChat(this.props.currentChatId);
+    loadPreviousChat = ({target: {scrollTop}}) => {
+        if (scrollTop === 0 && this.props.hasPreviousChat) {
+            this.previousChatUpdate = true;
+            this.props.loadPreviousChat(this.props.currentChatId);
+        }
     };
 
     createMessagesWithDateObjects = () => {
@@ -509,17 +512,11 @@ class ChatContent extends React.Component {
         const messages = this.createMessagesWithDateObjects();
 
         return (
-            <div className="chat-content" onScroll={(event) => {
-                console.log(event.target.scrollTop);
-            }}>
-                {
-                    this.props.hasPreviousChat &&
-                    <div className="chat-line">
-                        <div className="chat-load_previous" onClick={this.loadPreviousChat}>
-                            Load Previous
-                        </div>
-                    </div>
-                }
+            <div
+                className="chat-content"
+                ref={(inp) => this.chatContent = inp}
+                onScroll={this.loadPreviousChat}
+            >
                 {
                     messages.map(message => {
                         if (message.unreadPointer) {
@@ -715,48 +712,65 @@ class ChatInput extends React.Component {
 
 class ChatBody extends React.Component {
     static propTypes = {
-        chat: PropTypes.object,
+        currentChat: PropTypes.object,
+        currentChatId: PropTypes.number,
         updateMessage: PropTypes.func,
         closeCurrentChat: PropTypes.func,
         removeUnreadPointer: PropTypes.func,
         loadPreviousChat: PropTypes.func,
+        updateScrollerPosition: PropTypes.func,
+        scrollerPosition: PropTypes.number,
+    };
+
+    state = {
+        newMessageByMe: false,
+    };
+
+    cleanNewMessageByMe = () => {
+        this.setState({
+            newMessageByMe: false,
+        });
+    };
+
+    updateNewMessageByMe = () => {
+        this.setState({
+            newMessageByMe: true,
+        });
     };
 
     updateMessage = (message) => {
-        let {currentChatId} = this.props.chat;
+        let {currentChatId} = this.props;
 
+        this.updateNewMessageByMe();
         this.props.updateMessage(currentChatId, message);
     };
 
-
     render() {
-        const {currentChatId} = this.props.chat;
-        const currentChat = this.props.chat.list.find(listItem => listItem.id === currentChatId);
+        const {currentChatId, currentChat} = this.props;
 
         return (
             <div className="chat-body">
-                {
-                    !!currentChatId &&
-                    <span>
-                        <ChatHeader
-                            name={currentChat.name}
-                            time={currentChat.lastSeen}
-                            avatar={currentChat.avatar}
-                            closeCurrentChat={this.props.closeCurrentChat}
-                        />
-                        <ChatContent
-                            hasPreviousChat={currentChat.hasPreviousChat}
-                            currentChatId={currentChatId}
-                            messages={currentChat.messages}
-                            removeUnreadPointer={this.props.removeUnreadPointer}
-                            loadPreviousChat={this.props.loadPreviousChat}
-                            chatType={currentChat.chatType}
-                        />
-                        <ChatInput
-                            updateMessage={this.updateMessage}
-                        />
-                    </span>
-                }
+                <ChatHeader
+                    name={currentChat.name}
+                    time={currentChat.lastSeen}
+                    avatar={currentChat.avatar}
+                    closeCurrentChat={this.props.closeCurrentChat}
+                />
+                <ChatContent
+                    hasPreviousChat={currentChat.hasPreviousChat}
+                    currentChatId={currentChatId}
+                    messages={currentChat.messages}
+                    removeUnreadPointer={this.props.removeUnreadPointer}
+                    loadPreviousChat={this.props.loadPreviousChat}
+                    chatType={currentChat.chatType}
+                    scrollerPosition={this.props.scrollerPosition}
+                    updateScrollerPosition={this.props.updateScrollerPosition}
+                    newMessageByMe={this.state.newMessageByMe}
+                    cleanNewMessageByMe={this.cleanNewMessageByMe}
+                />
+                <ChatInput
+                    updateMessage={this.updateMessage}
+                />
             </div>
         )
     }
@@ -772,20 +786,47 @@ export default class Chat extends React.Component {
         loadPreviousChat: PropTypes.func,
     };
 
+    state = {
+        scrollerPositions: {},
+    };
+
+    updateScrollerPosition = (scrollerPosition, chatId) => {
+        this.setState((prevState) => {
+            let newScrollerPositions = {
+                ...prevState.scrollerPositions,
+            };
+            newScrollerPositions[chatId] = scrollerPosition;
+
+            return {
+                scrollerPositions: newScrollerPositions,
+            }
+        });
+    };
+
     render() {
+        const {currentChatId} = this.props.chat;
+        const currentChat = this.props.chat.list.find(listItem => listItem.id === currentChatId);
+
         return (
             <div className="chat">
                 <ChatList
                     chat={this.props.chat}
                     updateCurrentChat={this.props.updateCurrentChat}
                 />
-                <ChatBody
-                    chat={this.props.chat}
-                    updateMessage={this.props.updateMessage}
-                    closeCurrentChat={this.props.closeCurrentChat}
-                    removeUnreadPointer={this.props.removeUnreadPointer}
-                    loadPreviousChat={this.props.loadPreviousChat}
-                />
+                {
+                    currentChatId &&
+                    <ChatBody
+                        currentChat={currentChat}
+                        currentChatId={currentChatId}
+                        updateMessage={this.props.updateMessage}
+                        closeCurrentChat={this.props.closeCurrentChat}
+                        removeUnreadPointer={this.props.removeUnreadPointer}
+                        loadPreviousChat={this.props.loadPreviousChat}
+                        updateScrollerPosition={this.updateScrollerPosition}
+                        scrollerPosition={this.state.scrollerPositions[currentChatId]}
+                        key={`chat-${currentChatId}`}
+                    />
+                }
             </div>
         );
     }
