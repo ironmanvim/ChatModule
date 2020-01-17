@@ -151,6 +151,8 @@ class MessageDeliveryStatusIcons extends React.Component {
             messageDeliveryStatus = <i className="fas fa-check"> </i>
         } else if (this.props.status === 2) {
             messageDeliveryStatus = <i className="fas fa-check-double"> </i>
+        } else if (this.props.status === 3) {
+            messageDeliveryStatus = <i style={{color: "#b0ee9f"}} className="fas fa-check-double"> </i>
         }
         return messageDeliveryStatus;
     }

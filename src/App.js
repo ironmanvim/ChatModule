@@ -76,6 +76,7 @@ class App extends React.Component {
                             },
                             type: "image",
                             time: 7,
+                            read: 3, // read
                         },
                     ],
                     lastSeen: Date.now(),
@@ -225,8 +226,8 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
-                <FullScreenView>
+            <FullScreenView>
+                <div className="App">
                     <Chat
                         chat={this.state.chat}
                         updateCurrentChat={this.updateCurrentChat}
@@ -235,9 +236,9 @@ class App extends React.Component {
                         removeUnreadPointer={this.removeUnreadPointer}
                         loadPreviousChat={this.loadPreviousChat}
                     />
-                </FullScreenView>
-                {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
-            </div>
+                    {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
+                </div>
+            </FullScreenView>
         );
     }
 }
