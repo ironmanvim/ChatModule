@@ -436,6 +436,11 @@ class ChatContent extends React.Component {
         cleanNewMessageByMe: PropTypes.func,
     };
 
+    constructor(props) {
+        super(props);
+        this.autoScroll = false;
+    }
+
     componentDidMount() {
         if (this.unreadPointer) {
             this.unreadPointer.scrollIntoView();
@@ -463,6 +468,9 @@ class ChatContent extends React.Component {
                 this.props.removeUnreadPointer(this.props.currentChatId);
             }
         }
+        if (this.autoScroll) {
+            this.endPointer.scrollIntoView();
+        }
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -478,11 +486,17 @@ class ChatContent extends React.Component {
         this.props.updateScrollerPosition(this.chatContent.scrollTop, this.props.currentChatId);
     }
 
-    loadPreviousChat = ({target: {scrollTop}}) => {
+    onScroll = ({target: {scrollTop, scrollHeight}}) => {
         if (scrollTop === 0 && this.props.hasPreviousChat) {
-            this.previousChatUpdate = true;
-            this.props.loadPreviousChat(this.props.currentChatId);
+            this.loadPreviousChat();
+        } else if (scrollTop === scrollHeight) {
+            this.autoScroll = true;
         }
+    };
+
+    loadPreviousChat = () => {
+        this.previousChatUpdate = true;
+        this.props.loadPreviousChat(this.props.currentChatId);
     };
 
     createMessagesWithDateObjects = () => {
@@ -518,7 +532,7 @@ class ChatContent extends React.Component {
             <div
                 className="chat-content"
                 ref={(inp) => this.chatContent = inp}
-                onScroll={this.loadPreviousChat}
+                onScroll={this.onScroll}
             >
                 {
                     messages.map(message => {
