@@ -19,6 +19,7 @@ class App extends React.Component {
                             by: "you",
                             data: "222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
                             time: 1, type: "text",
+                            sendSeen: false,
                         },
                         {
                             id: 2,
@@ -40,7 +41,8 @@ class App extends React.Component {
                             by: "you",
                             data: "Hi",
                             time: 4,
-                            type: "text"
+                            type: "text",
+                            sendSeen: false,
                         },
                         {
                             unreadPointer: true,
@@ -60,12 +62,12 @@ class App extends React.Component {
                             id: 7,
                             by: "you",
                             data: {
-                                thumbnail: require("./Assets/images/trial.png"),
                                 video: require("./Assets/videos/trial.mp4"),
                                 caption: "Avengers End Game",
                             },
                             type: "video",
                             time: 6,
+                            sendSeen: false,
                         },
                         {
                             id: 6,
@@ -82,7 +84,8 @@ class App extends React.Component {
                     lastSeen: Date.now(),
                     unread: 3,
                     hasPreviousChat: true,
-                    chatType: "group"
+                    chatType: "group",
+                    newMessage: true,
                 }, {
                     id: 2,
                     name: "Vishnu",
@@ -97,6 +100,7 @@ class App extends React.Component {
                     unread: 0,
                     hasPreviousChat: false,
                     chatType: "individual",
+                    newMessage: false,
                 },
             ],
             currentChatId: null,
@@ -175,8 +179,108 @@ class App extends React.Component {
     };
 
     updateMessage = (id, message) => {
-        const {id: message_id} = message;
+        const {type, file} = message;
+        let self = this;
+        if (type === "text") {
+            self.setState((prevState) => {
+                return {
+                    chat: {
+                        ...prevState.chat,
+                        list: prevState.chat.list.map(listItem => {
+                            if (listItem.id === id) {
+                                return {
+                                    ...listItem,
+                                    messages: [
+                                        ...listItem.messages,
+                                        message,
+                                    ],
+                                };
+                            }
+                            return listItem;
+                        }),
+                    }
+                };
+            });
+        } else {
+            if (FileReader && file) {
+                let fileReader = new FileReader();
+                fileReader.onload = function () {
+                    if (type === "image") {
+                        message = {
+                            ...message,
+                            data: {
+                                image: fileReader.result,
+                                caption: message.data,
+                            }
+                        };
+                    } else if (type === "video") {
+                        message = {
+                            ...message,
+                            data: {
+                                video: fileReader.result,
+                                caption: message.data,
+                            }
+                        };
+                    }
+                    self.setState((prevState) => {
+                        return {
+                            chat: {
+                                ...prevState.chat,
+                                list: prevState.chat.list.map(listItem => {
+                                    if (listItem.id === id) {
+                                        return {
+                                            ...listItem,
+                                            messages: [
+                                                ...listItem.messages,
+                                                message,
+                                            ],
+                                        };
+                                    }
+                                    return listItem;
+                                }),
+                            }
+                        };
+                    });
+                };
+                fileReader.readAsDataURL(file);
+            }
 
+            // Not supported
+            else {
+                // fallback -- perhaps submit the input to an iframe and temporarily store
+                // them on the server until the user's session ends.
+            }
+        }
+
+        // setTimeout(() => {
+        //     this.setState((prevState) => {
+        //         return {
+        //             chat: {
+        //                 ...prevState.chat,
+        //                 list: prevState.chat.list.map(listItem => {
+        //                     if (listItem.id === id) {
+        //                         return {
+        //                             ...listItem,
+        //                             messages: listItem.messages.map(message => {
+        //                                 if (message_id === message.id) {
+        //                                     return {
+        //                                         ...message,
+        //                                         read: 1,
+        //                                     }
+        //                                 }
+        //                                 return message;
+        //                             }),
+        //                         };
+        //                     }
+        //                     return listItem;
+        //                 }),
+        //             }
+        //         };
+        //     });
+        // }, 2500)
+    };
+
+    markAsReadCurrentChat = (id) => {
         this.setState((prevState) => {
             return {
                 chat: {
@@ -185,10 +289,20 @@ class App extends React.Component {
                         if (listItem.id === id) {
                             return {
                                 ...listItem,
-                                messages: [
-                                    ...listItem.messages,
-                                    message,
-                                ],
+                                messages: listItem.messages.map(message => {
+                                    if (message.id) {
+                                        if (message.sendSeen === false) {
+                                            console.log("Message Seen Delivery");
+                                            return {
+                                                ...message,
+                                                sendSeen: true,
+                                            }
+                                        }
+                                        return message;
+                                    }
+                                    return message;
+                                }),
+                                newMessage: false,
                             };
                         }
                         return listItem;
@@ -196,32 +310,6 @@ class App extends React.Component {
                 }
             };
         });
-        setTimeout(() => {
-            this.setState((prevState) => {
-                return {
-                    chat: {
-                        ...prevState.chat,
-                        list: prevState.chat.list.map(listItem => {
-                            if (listItem.id === id) {
-                                return {
-                                    ...listItem,
-                                    messages: listItem.messages.map(message => {
-                                        if (message_id === message.id) {
-                                            return {
-                                                ...message,
-                                                read: 1,
-                                            }
-                                        }
-                                        return message;
-                                    }),
-                                };
-                            }
-                            return listItem;
-                        }),
-                    }
-                };
-            });
-        }, 2500)
     };
 
     render() {
@@ -235,6 +323,7 @@ class App extends React.Component {
                         updateMessage={this.updateMessage}
                         removeUnreadPointer={this.removeUnreadPointer}
                         loadPreviousChat={this.loadPreviousChat}
+                        markAsReadCurrentChat={this.markAsReadCurrentChat}
                     />
                     {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
                 </div>

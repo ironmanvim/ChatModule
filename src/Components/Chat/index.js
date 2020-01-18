@@ -5,6 +5,7 @@ import {Picker as EmojiPicker} from 'emoji-mart';
 import uuid from 'uuid';
 import URLMetadata from './URLMetadata';
 import * as utils from '../../js/utils';
+import VideoThumbnail from 'react-video-thumbnail';
 
 import './Assets/css/chat.css';
 import '../../Assets/fontawesome/css/all.css';
@@ -366,7 +367,7 @@ class ChatLine extends React.Component {
                 data = (
                     <div>
                         <div className="chat-line-video" onClick={this.showFullScreen}>
-                            <img src={message.data.thumbnail} alt=""/>
+                            <VideoThumbnail videoUrl={message.data.video}/>
                             <div className="chat-video-play-icon">
                                 <i className="fa fa-play"> </i>
                             </div>
@@ -585,9 +586,9 @@ class EmojiPanelButton extends React.Component {
         const {onEmojiSelect, ...buttonProps} = this.props;
         return (
             <span style={{position: "relative"}}>
-            <button className="emoji" onClick={this.toggleEmojiPanel} {...buttonProps}>
-                {this.props.children}
-            </button>
+                <button className="emoji" onClick={this.toggleEmojiPanel} {...buttonProps}>
+                    {this.props.children}
+                </button>
                 {
                     this.state.showEmojiPanel &&
                     <EmojiPicker
@@ -634,6 +635,131 @@ class MessageInputWithURLMetadata extends React.Component {
     }
 }
 
+class FileButton extends React.Component {
+    static propTypes = {
+        onFileSelected: PropTypes.func,
+    };
+
+    constructor(props) {
+        super(props);
+        this.fileSelector = React.createRef();
+    }
+
+    onButtonClick = () => {
+        this.fileSelector.current.click();
+    };
+
+    fileSelected = (event) => {
+        const {onFileSelected} = this.props;
+
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            console.log("File Selected");
+            console.log(selectedFile);
+            if (selectedFile.size > 25 * 1024 * 1024) {
+                console.log("File Size limit exceeded");
+                return;
+            }
+            onFileSelected(selectedFile);
+        } else {
+            console.log("File Deselected");
+            onFileSelected(null);
+        }
+    };
+
+    render() {
+        const {onFileSelected, ...remainingProps} = this.props;
+        return (
+            <>
+                <button {...remainingProps} onClick={this.onButtonClick}>
+                    {this.props.children}
+                </button>
+                <input
+                    type="file"
+                    ref={this.fileSelector}
+                    style={{display: "none"}}
+                    onChange={this.fileSelected}
+                />
+            </>
+        );
+    }
+}
+
+class AttachmentsButton extends React.Component {
+    static propTypes = {
+        onAttachment: PropTypes.func,
+        fileSelected: PropTypes.bool,
+        fileType: PropTypes.string,
+    };
+
+    state = {
+        showAttachmentsPanel: false,
+    };
+
+    toggleAttachmentPanel = () => {
+        this.setState({
+            showAttachmentsPanel: !this.state.showAttachmentsPanel,
+        });
+    };
+
+    imageSelected = (file) => {
+        const {onAttachment} = this.props;
+
+        if (file) {
+            onAttachment(file, "image");
+        } else {
+            onAttachment(null, null);
+        }
+    };
+
+    videoSelected = (file) => {
+        const {onAttachment} = this.props;
+
+        if (file) {
+            onAttachment(file, "video");
+        } else {
+            onAttachment(null, null);
+        }
+    };
+
+    cancelAttachment = () => {
+        const {onAttachment} = this.props;
+        onAttachment(null, null);
+    };
+
+    render() {
+        const {className, onAttachment, fileSelected, fileType, ...buttonProps} = this.props;
+        const chatFileSelected = fileSelected ? "chat-file-selected" : "";
+        const chatImageSelected = fileType === "image" ? "chat-file-selected" : "";
+        const chatVideoSelected = fileType === "video" ? "chat-file-selected" : "";
+
+        return (
+            <span style={{position: "relative"}}>
+                <button className={`${className} ${chatFileSelected}`}
+                        onClick={this.toggleAttachmentPanel} {...buttonProps}>
+                    {this.props.children}
+                </button>
+                {
+                    this.state.showAttachmentsPanel &&
+                    <div className="chat-attachments-panel">
+                        <FileButton type="button" className={`chat-attachment-button ${chatImageSelected}`}
+                                    onFileSelected={this.imageSelected}>
+                            <i className="fas fa-image"> </i>
+                        </FileButton>
+                        <FileButton type="button" className={`chat-attachment-button ${chatVideoSelected}`}
+                                    onFileSelected={this.videoSelected}>
+                            <i className="fas fa-video"> </i>
+                        </FileButton>
+                        <button type="button" className="chat-attachment-button" onClick={this.cancelAttachment}>
+                            <i className="fas fa-times"> </i>
+                        </button>
+                    </div>
+                }
+            </span>
+        );
+    }
+}
+
 class ChatInput extends React.Component {
     static propTypes = {
         updateMessage: PropTypes.func,
@@ -641,8 +767,10 @@ class ChatInput extends React.Component {
 
     state = {
         message: "",
-        type: "",
+        type: "text",
         link: null,
+        file: null,
+        fileSelected: false,
     };
 
     getLink = text => {
@@ -651,16 +779,35 @@ class ChatInput extends React.Component {
     };
 
     onMessageInput = ({target: {value: message}}) => {
+        let link = null;
+        if (this.state.type === "text") {
+            link = this.getLink(message);
+        }
         this.setState({
             message,
-            type: "text",
-            link: this.getLink(message),
+            link,
         });
+    };
+
+    onAttachment = (file, type) => {
+        if (type) {
+            this.setState({
+                file: file,
+                type: type,
+                fileSelected: true,
+            });
+        } else {
+            this.setState({
+                file: null,
+                type: "text",
+                fileSelected: false,
+            });
+        }
     };
 
     onMessageSubmit = (event) => {
         event.preventDefault();
-        if (this.state.message.match(utils.onlySpacesRegex)) {
+        if (this.state.type === "text" && this.state.message.match(utils.onlySpacesRegex)) {
             return;
         }
         const {updateMessage} = this.props;
@@ -672,12 +819,15 @@ class ChatInput extends React.Component {
             by: 0,
             time: Date.now(),
             read: 0,
+            file: this.state.file,
         };
 
         this.setState({
             message: "",
-            type: "",
+            type: "text",
             link: null,
+            file: null,
+            fileSelected: false,
         });
 
         updateMessage(message);
@@ -686,7 +836,6 @@ class ChatInput extends React.Component {
     emojiUpdate = (emoji) => {
         this.setState({
             message: this.state.message + emoji.native,
-            type: "text",
         });
         this.messageInput.focus();
     };
@@ -702,7 +851,15 @@ class ChatInput extends React.Component {
                         link={this.state.link}
                     />
                     <button type="submit" className="button"><i className="far fa-paper-plane"> </i></button>
-                    <button type="button" className="button"><i className="fas fa-paperclip"> </i></button>
+                    <AttachmentsButton
+                        type="button"
+                        className="button"
+                        onAttachment={this.onAttachment}
+                        fileSelected={this.state.fileSelected}
+                        fileType={this.state.type}
+                    >
+                        <i className="fas fa-paperclip"> </i>
+                    </AttachmentsButton>
                     <EmojiPanelButton type="button" className="button" onEmojiSelect={this.emojiUpdate}>
                         <i className="far fa-smile"> </i>
                     </EmojiPanelButton>
@@ -786,11 +943,21 @@ export default class Chat extends React.Component {
         closeCurrentChat: PropTypes.func,
         removeUnreadPointer: PropTypes.func,
         loadPreviousChat: PropTypes.func,
+        markAsReadCurrentChat: PropTypes.func,
     };
 
     state = {
         scrollerPositions: {},
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {chat: {currentChatId}, markAsReadCurrentChat} = this.props;
+        const currentChat = this.props.chat.list.find(listItem => listItem.id === currentChatId);
+
+        if (currentChatId && currentChat.newMessage) {
+            markAsReadCurrentChat(currentChatId);
+        }
+    }
 
     updateScrollerPosition = (scrollerPosition, chatId) => {
         this.setState((prevState) => {

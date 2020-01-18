@@ -182,7 +182,7 @@ export function getFormattedTime(time) {
 }
 
 export const linkRegex = /(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()[\]{};:'".,<>?«»“”‘’]))?/;
-export const onlySpacesRegex = /^(\s+)$/;
+export const onlySpacesRegex = /^(\s*)$/;
 export function linksSplitter(text) {
     return text.split(/(\s+)/).map((word) => {
         if (word.match(linkRegex)) {

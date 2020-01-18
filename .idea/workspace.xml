@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="refactored chat and fullscreen components and added to bit">
+    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="updated message seen icon">
       <change beforePath="$PROJECT_DIR$/.bitmap" beforeDir="false" afterPath="$PROJECT_DIR$/.bitmap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Chat/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -165,7 +166,8 @@
       <workItem from="1579150996212" duration="7036000" />
       <workItem from="1579189146982" duration="628000" />
       <workItem from="1579196502755" duration="15000" />
-      <workItem from="1579247443490" duration="341000" />
+      <workItem from="1579247443490" duration="9092000" />
+      <workItem from="1579361289801" duration="12532000" />
     </task>
     <task id="LOCAL-00001" summary="Chat v1.0.0 Commit">
       <created>1577612140637</created>
@@ -202,7 +204,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578394885522</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="updated message seen icon">
+      <created>1579248021242</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1579248021242</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,6 +237,7 @@
     <MESSAGE value="Component Updated to modules" />
     <MESSAGE value="Chat updated to save scrollPositions and newMessageScrolling updated" />
     <MESSAGE value="refactored chat and fullscreen components and added to bit" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored chat and fullscreen components and added to bit" />
+    <MESSAGE value="updated message seen icon" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated message seen icon" />
   </component>
 </project>
