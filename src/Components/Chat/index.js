@@ -434,6 +434,7 @@ class ChatContent extends React.Component {
         scrollerPosition: PropTypes.number,
         newMessageByMe: PropTypes.bool,
         cleanNewMessageByMe: PropTypes.func,
+        newMessage: PropTypes.bool,
     };
 
     constructor(props) {
@@ -468,14 +469,16 @@ class ChatContent extends React.Component {
                 this.props.removeUnreadPointer(this.props.currentChatId);
             }
         }
-        if (this.autoScroll) {
+        if (snapshot.autoScroll) {
             this.endPointer.scrollIntoView();
+            this.autoScroll = true;
         }
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
         return {
             previousScrollHeight: this.chatContent.scrollHeight,
+            previousAutoScroll: this.autoScroll,
         }
     }
 
@@ -939,6 +942,7 @@ class ChatBody extends React.Component {
                     scrollerPosition={this.props.scrollerPosition}
                     updateScrollerPosition={this.props.updateScrollerPosition}
                     newMessageByMe={this.state.newMessageByMe}
+                    newMessage={currentChat.newMessage}
                     cleanNewMessageByMe={this.cleanNewMessageByMe}
                 />
                 <ChatInput
