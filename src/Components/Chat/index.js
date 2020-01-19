@@ -469,13 +469,16 @@ class ChatContent extends React.Component {
                 this.props.removeUnreadPointer(this.props.currentChatId);
             }
         }
-        if (snapshot.autoScroll) {
-            this.endPointer.scrollIntoView();
+        if (snapshot.previousAutoScroll) {
+            this.endPointer.scrollIntoView({
+                behavior: "smooth",
+            });
             this.autoScroll = true;
         }
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
+        console.log("autoScroll: ", this.autoScroll);
         return {
             previousScrollHeight: this.chatContent.scrollHeight,
             previousAutoScroll: this.autoScroll,
@@ -489,12 +492,12 @@ class ChatContent extends React.Component {
         this.props.updateScrollerPosition(this.chatContent.scrollTop, this.props.currentChatId);
     }
 
-    onScroll = ({target: {scrollTop, scrollHeight}}) => {
+    onScroll = ({target: {scrollTop, scrollHeight, clientHeight}}) => {
         if (scrollTop === 0 && this.props.hasPreviousChat) {
             this.loadPreviousChat();
-        } else if (scrollTop === scrollHeight) {
-            this.autoScroll = true;
         }
+
+        this.autoScroll = scrollTop === scrollHeight - clientHeight;
     };
 
     loadPreviousChat = () => {
