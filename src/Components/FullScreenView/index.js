@@ -1,76 +1,72 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactPlayer from 'react-player';
-import * as PropTypes from 'prop-types';
 
 import "./Assets/css/full-screen.css";
 
-export default class FullScreenView extends React.Component {
-    state = {
+export const FullScreenContext = React.createContext({});
+
+export default function FullScreenView({children}) {
+    const [fullScreen, setFullScreen] = useState({
         content: null,
         type: null,
         isFullScreen: false,
-    };
+    });
 
-    static childContextTypes = {
-        showFullScreen: PropTypes.func,
-    };
-
-    showFullScreen = (content, type) => {
-        this.setState({
+    const showFullScreen = (content, type) => {
+        setFullScreen({
             content,
             type,
             isFullScreen: true,
         });
     };
 
-    hideFullScreen = () => {
-        this.setState({
+    const hideFullScreen = () => {
+        setFullScreen({
             content: null,
             type: null,
             isFullScreen: false,
         });
     };
 
-    getChildContext() {
-        return {
-            showFullScreen: this.showFullScreen,
+    let view = null;
+    if (fullScreen.isFullScreen) {
+        if (fullScreen.type === "image") {
+            view = (
+                <div className="image-view">
+                    <img src={fullScreen.content} alt="view"/>
+                </div>
+            );
+        } else if (fullScreen.type === "video") {
+            view = (
+                <div className="image-view">
+                    <ReactPlayer
+                        url={fullScreen.content}
+                        controls
+                        playing
+                        width='100%'
+                        height='100%'
+                    />
+                </div>
+            );
+        } else if (fullScreen.type === "ReactElement") {
+            view = (
+                <div className="image-view">
+                    {fullScreen.content}
+                </div>
+            );
         }
     }
 
-    render() {
-        const {children} = this.props;
-        let view = null;
-        if (this.state.isFullScreen) {
-            if (this.state.type === "image") {
-                view = (
-                    <div className="image-view">
-                        <img src={this.state.content} alt="view"/>
-                    </div>
-                );
-            } else if (this.state.type === "video") {
-                view = (
-                    <div className="image-view">
-                        <ReactPlayer
-                            url={this.state.content}
-                            controls
-                            playing
-                            width='100%'
-                            height='100%'
-                        />
-                    </div>
-                );
-            }
-        }
-
-        return (
+    return (
+        <FullScreenContext.Provider value={showFullScreen}>
             <div>
                 {children}
                 {
-                    this.state.isFullScreen ?
+                    fullScreen.isFullScreen ?
                         <div className="full-screen">
                             <div
                                 className="exit"
-                                onClick={this.hideFullScreen}
+                                onClick={hideFullScreen}
                             >
                                 &times;
                             </div>
@@ -80,6 +76,6 @@ export default class FullScreenView extends React.Component {
                         </div> : null
                 }
             </div>
-        );
-    }
+        </FullScreenContext.Provider>
+    );
 }

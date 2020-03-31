@@ -8,6 +8,7 @@
     background: rgba(0,0,0,0.8);
     min-width: 1000px;
     min-height: 500px;
+    z-index: 1000;
 }
 
 .full-screen .exit {

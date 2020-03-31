@@ -8,11 +8,15 @@ import FullScreenView from "./Components/FullScreenView";
 class App extends React.Component {
     state = {
         chat: {
+            loadingList: false,
+            more: true,
             list: [
                 {
                     id: 1,
                     name: "Vishal",
                     avatar: require("./Assets/images/Avatar.png"),
+                    latestMessageTime: 20,
+                    loadingMessages: false,
                     messages: [
                         {
                             id: 1,
@@ -80,6 +84,18 @@ class App extends React.Component {
                             time: 7,
                             read: 3, // read
                         },
+                        {
+                            id: 6,
+                            by: 0,
+                            data: {
+                                file: require("./Assets/images/trial.png"),
+                                name: "A best Avatar Caption gfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+                                caption: "A file caption ",
+                            },
+                            type: "document",
+                            time: 7,
+                            read: 3, // read
+                        },
                     ],
                     lastSeen: Date.now(),
                     unread: 3,
@@ -90,6 +106,8 @@ class App extends React.Component {
                     id: 2,
                     name: "Vishnu",
                     avatar: require("./Assets/images/Avatar.png"),
+                    latestMessageTime: 30,
+                    loadingMessages: true,
                     messages: [
                         {id: 1, by: 0, data: "Hello", time: 1, type: "text"},
                         {id: 2, by: "you", data: "Hi", time: 2, type: "text"},
@@ -105,6 +123,42 @@ class App extends React.Component {
             ],
             currentChatId: null,
         },
+    };
+
+    searchPerson = () => {
+        this.setState({
+            chat: {
+                ...this.state.chat,
+                loadingList: true
+            }
+        });
+        setTimeout(() => {
+            if (this.state.chat.more) {
+                this.setState((prevState) => {
+                    return {
+                        chat: {
+                            ...prevState.chat,
+                            more: false,
+                            loadingList: false,
+                            list: [
+                                ...prevState.chat.list,
+                                {
+                                    id: uuid.v4(),
+                                    name: "Tony Stark",
+                                    avatar: require("./Assets/images/Avatar.png"),
+                                    messages: [],
+                                    lastSeen: 2,
+                                    unread: 0,
+                                    hasPreviousChat: false,
+                                    chatType: "individual",
+                                    newMessage: false,
+                                },
+                            ],
+                        }
+                    }
+                });
+            }
+        }, 3000);
     };
 
     updateCurrentChat = (id) => {
@@ -156,26 +210,46 @@ class App extends React.Component {
     };
 
     loadPreviousChat = (id) => {
+        const currentChat = this.state.chat.list.find(listItem => listItem.id === id);
+
         this.setState((prevState) => {
             return {
                 chat: {
                     ...prevState.chat,
                     list: prevState.chat.list.map(listItem => {
-                        if (listItem.id === id) {
-                            return {
-                                ...listItem,
-                                messages: [
-                                    {id: uuid.v4(), by: 0, data: "Previous Message", time: 1, type: "text"},
-                                    {id: uuid.v4(), by: "Arun", data: "Previous Message", time: 1, type: "text"},
-                                    ...listItem.messages,
-                                ],
-                            };
+                        return {
+                            ...listItem,
+                            loadingMessages: true,
                         }
-                        return listItem;
-                    }),
+                    })
                 }
-            }
+            };
         });
+
+
+        setTimeout(() => {
+            this.setState((prevState) => {
+                return {
+                    chat: {
+                        ...prevState.chat,
+                        list: prevState.chat.list.map(listItem => {
+                            if (listItem.id === id) {
+                                return {
+                                    ...listItem,
+                                    loadingMessages: false,
+                                    messages: [
+                                        {id: uuid.v4(), by: 0, data: "Previous Message", time: 1, type: "text"},
+                                        {id: uuid.v4(), by: "Arun", data: "Previous Message", time: 1, type: "text"},
+                                        ...listItem.messages,
+                                    ],
+                                };
+                            }
+                            return listItem;
+                        }),
+                    }
+                }
+            });
+        }, 3000);
     };
 
     updateMessage = (id, message) => {
@@ -218,6 +292,14 @@ class App extends React.Component {
                             ...message,
                             data: {
                                 video: fileReader.result,
+                                caption: message.data,
+                            }
+                        };
+                    } else if (type === "document") {
+                        message = {
+                            ...message,
+                            data: {
+                                file: fileReader.result,
                                 caption: message.data,
                             }
                         };
@@ -312,6 +394,17 @@ class App extends React.Component {
         });
     };
 
+    noLoadingList = () => {
+        this.setState((prevState) => {
+            return {
+                chat: {
+                    ...prevState.chat,
+                    loadingList: false,
+                }
+            };
+        });
+    };
+
     render() {
         return (
             <FullScreenView>
@@ -324,6 +417,8 @@ class App extends React.Component {
                         removeUnreadPointer={this.removeUnreadPointer}
                         loadPreviousChat={this.loadPreviousChat}
                         markAsReadCurrentChat={this.markAsReadCurrentChat}
+                        searchPerson={this.searchPerson}
+                        noLoadingList={this.noLoadingList}
                     />
                     {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
                 </div>

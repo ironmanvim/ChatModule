@@ -1,4 +1,3 @@
-
 Array.prototype.lastFind = function (predicate) {
     for (let i = this.length - 1; i >= 0; --i) {
         const x = this[i];
@@ -163,6 +162,9 @@ export function getFormattedDate(time) {
         return null;
     }
 
+    time = new Date(time);
+    time = new Date(time.getFullYear(), time.getMonth(), time.getDate());
+    time = time.getTime();
 
     let diff = now - time;
     if (diff < 24 * HOUR_MILLIS) {

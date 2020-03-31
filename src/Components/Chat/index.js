@@ -6,10 +6,12 @@ import uuid from 'uuid';
 import URLMetadata from './URLMetadata';
 import * as utils from '../../js/utils';
 import VideoThumbnail from 'react-video-thumbnail';
+import download from 'downloadjs';
 
 import './Assets/css/chat.css';
 import '../../Assets/fontawesome/css/all.css';
 import 'emoji-mart/css/emoji-mart.css';
+import Loading from "../Loading";
 
 
 class ChatSearchBar extends React.Component {
@@ -47,7 +49,7 @@ class ChatListItem extends React.Component {
         ]),
         time: PropTypes.number,
         unreadMsgCount: PropTypes.number,
-        currentChatId: PropTypes.number,
+        currentChatId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         updateCurrentChat: PropTypes.func,
     };
 
@@ -98,9 +100,17 @@ class ChatListItem extends React.Component {
                         {this.getStatusWithTimestamp()}
                     </div>
                     {
+                        isThisCurrentChat !== "current" &&
                         this.props.unreadMsgCount > 0 &&
                         <div className="chat-list-item-msg_count">
                             {this.props.unreadMsgCount}
+                        </div>
+                    }
+                    {
+                        isThisCurrentChat !== "current" &&
+                        this.props.unreadMsgCount === -1 &&
+                        <div className="chat-list-item-msg_count">
+
                         </div>
                     }
                 </div>
@@ -112,13 +122,19 @@ class ChatListItem extends React.Component {
 class ChatListItems extends React.Component {
     static propTypes = {
         list: PropTypes.array,
-        currentChatId: PropTypes.number,
+        currentChatId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         updateCurrentChat: PropTypes.func,
+        loadingList: PropTypes.bool,
     };
 
     render() {
         return (
             <div className="chat-list-items">
+                {this.props.loadingList && (
+                    <div className="chat-list-item loading">
+                        <Loading/>
+                    </div>
+                )}
                 {this.props.list.map(listItem =>
                     <ChatListItem
                         key={listItem.id}
@@ -161,8 +177,12 @@ class MessageDeliveryStatusIcons extends React.Component {
 
 class ChatList extends React.Component {
     static propTypes = {
+        loadingList: PropTypes.bool,
         chat: PropTypes.object,
         updateCurrentChat: PropTypes.func,
+        searchPerson: PropTypes.func,
+        more: PropTypes.bool,
+        noLoadingList: PropTypes.func,
     };
 
     state = {
@@ -174,8 +194,16 @@ class ChatList extends React.Component {
     };
 
     getFilteredList = () => {
-        return this.props.chat.list
-            .filter(listItem => listItem.name.includes(this.state.search))
+        const filteredList = this.props.chat.list
+            .sort((AListItem, BListItem) => {
+                return BListItem.latestMessageTime - AListItem.latestMessageTime;
+            })
+            .filter(listItem => {
+                if (this.state.search.length !== 0) {
+                    return listItem.name.toLowerCase().includes(this.state.search.toLowerCase());
+                }
+                return listItem.chatType === "group" || listItem.messages.length !== 0;
+            })
             .map(listItem => {
                 return {
                     avatar: listItem.avatar,
@@ -185,40 +213,57 @@ class ChatList extends React.Component {
                     lastSeen: listItem.lastSeen,
                     desc: (() => {
                         let {messages} = listItem;
-                        let message = messages[messages.length - 1];
+                        if (messages.length > 0) {
+                            let message = messages[messages.length - 1];
 
-                        let messageDeliveryStatus = (
-                            message.by === 0 &&
-                            <div className="chat-message_delivery_status">
-                                <MessageDeliveryStatusIcons status={message.read}/>
-                            </div>
-                        );
+                            let messageDeliveryStatus = (
+                                message.by === 0 &&
+                                <div className="chat-message_delivery_status">
+                                    <MessageDeliveryStatusIcons status={message.read}/>
+                                </div>
+                            );
 
-                        if (message.type === "text") {
-                            return (
-                                <span>
+                            if (message.type === "text") {
+                                return (
+                                    <span>
                                     {messageDeliveryStatus}
-                                    {message.data}
+                                        {message.data}
                                 </span>
-                            );
-                        } else if (message.type === "image") {
-                            return (
-                                <span>
+                                );
+                            } else if (message.type === "image") {
+                                return (
+                                    <span>
                                     {messageDeliveryStatus}
-                                    <i className="far fa-file-image"> </i> image
+                                        <i className="far fa-file-image"> </i> image
                                 </span>
-                            );
-                        } else if (message.type === "video") {
-                            return (
-                                <span>
+                                );
+                            } else if (message.type === "video") {
+                                return (
+                                    <span>
                                     {messageDeliveryStatus}
-                                    <i className="far fa-file-video"> </i> video
+                                        <i className="far fa-file-video"> </i> video
                                 </span>
-                            );
+                                );
+                            } else if (message.type === "document") {
+                                return (
+                                    <span>
+                                    {messageDeliveryStatus}
+                                        <i className="far fa-file"> </i> document
+                                </span>
+                                );
+                            }
                         }
+                        return "";
                     })(),
                 };
             });
+        if (this.state.search.length > 0 && filteredList.length === 0 && !this.props.loadingList && this.props.more) {
+            this.props.searchPerson(this.state.search);
+        }
+        if (this.props.loadingList && this.state.search.length === 0) {
+            this.props.noLoadingList();
+        }
+        return filteredList;
     };
 
     render() {
@@ -231,6 +276,7 @@ class ChatList extends React.Component {
                     list={this.getFilteredList()}
                     currentChatId={this.props.chat.currentChatId}
                     updateCurrentChat={this.props.updateCurrentChat}
+                    loadingList={this.props.loadingList}
                 />
             </div>
         )
@@ -291,6 +337,7 @@ class ChatLine extends React.Component {
     static propTypes = {
         message: PropTypes.object,
         chatType: PropTypes.string,
+        onLoad: PropTypes.func,
     };
 
     static contextTypes = {
@@ -313,6 +360,12 @@ class ChatLine extends React.Component {
                 break;
             default:
         }
+    };
+
+    downloadFile = () => {
+        const {message} = this.props;
+
+        download(message.data.file);
     };
 
     getTime = () => {
@@ -357,7 +410,7 @@ class ChatLine extends React.Component {
                 data = (
                     <div>
                         <div className="chat-line-image" onClick={this.showFullScreen}>
-                            <img src={message.data.image} alt=""/>
+                            <img src={message.data.image} alt="" onLoad={this.props.onLoad}/>
                         </div>
                         {this.getConvertedMessage(message.data.caption)}
                     </div>
@@ -367,9 +420,22 @@ class ChatLine extends React.Component {
                 data = (
                     <div>
                         <div className="chat-line-video" onClick={this.showFullScreen}>
-                            <VideoThumbnail videoUrl={message.data.video}/>
+                            <VideoThumbnail videoUrl={message.data.video} onLoad={this.props.onLoad}/>
                             <div className="chat-video-play-icon">
                                 <i className="fa fa-play"> </i>
+                            </div>
+                        </div>
+                        {this.getConvertedMessage(message.data.caption)}
+                    </div>
+                );
+                break;
+            case "document":
+                data = (
+                    <div>
+                        <div className="chat-line-document" onClick={this.downloadFile}>
+                            <i className="fa fa-file"> </i>
+                            <div className="chat-line-document-name">
+                                {message.data.file.replace(/^.*[\\/]/, '')}
                             </div>
                         </div>
                         {this.getConvertedMessage(message.data.caption)}
@@ -422,11 +488,31 @@ class DateMarker extends React.Component {
     }
 }
 
+// class ChatNewMessagesIcon extends React.Component {
+//     static propTypes = {
+//         unread: PropTypes.number,
+//     };
+//
+//     render() {
+//         return (
+//             <div className="chat-new-message-icon">
+//                 <i className="fas fa-chevron-down"> </i>
+//                 {
+//                     this.props.unread > 0 &&
+//                     <div className="chat-new-message-number-icon">
+//                         {this.props.unread}
+//                     </div>
+//                 }
+//             </div>
+//         );
+//     }
+// }
+
 class ChatContent extends React.Component {
     static propTypes = {
         messages: PropTypes.array,
         removeUnreadPointer: PropTypes.func,
-        currentChatId: PropTypes.number,
+        currentChatId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         loadPreviousChat: PropTypes.func,
         hasPreviousChat: PropTypes.bool,
         chatType: PropTypes.string,
@@ -435,6 +521,9 @@ class ChatContent extends React.Component {
         newMessageByMe: PropTypes.bool,
         cleanNewMessageByMe: PropTypes.func,
         newMessage: PropTypes.bool,
+        unreadMsgCount: PropTypes.number,
+        loadingMessages: PropTypes.bool,
+        notify: PropTypes.bool
     };
 
     constructor(props) {
@@ -448,7 +537,9 @@ class ChatContent extends React.Component {
         } else {
             let {scrollerPosition} = this.props;
             if (scrollerPosition) {
+                console.log("ScrollerPositionThere");
                 this.chatContent.scrollTop = scrollerPosition;
+                console.log(scrollerPosition);
             } else {
                 this.endPointer.scrollIntoView();
             }
@@ -456,14 +547,21 @@ class ChatContent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.previousChatUpdate) {
+        if (this.previousChatUpdate && !this.props.loadingMessages) {
             this.chatContent.scrollTop = this.chatContent.scrollHeight - snapshot.previousScrollHeight;
             this.previousChatUpdate = false;
             if (this.unreadPointer) {
                 this.props.removeUnreadPointer(this.props.currentChatId);
             }
         } else if (this.props.newMessageByMe) {
-            this.endPointer.scrollIntoView();
+            if (snapshot.previousAutoScroll) {
+                this.endPointer.scrollIntoView({
+                    behavior: "smooth",
+                });
+                this.autoScroll = true;
+            } else {
+                this.endPointer.scrollIntoView();
+            }
             this.props.cleanNewMessageByMe();
             if (this.unreadPointer) {
                 this.props.removeUnreadPointer(this.props.currentChatId);
@@ -498,7 +596,12 @@ class ChatContent extends React.Component {
         }
 
         this.autoScroll = scrollTop === scrollHeight - clientHeight;
+        console.log("autoScroll: ", this.autoScroll);
     };
+
+    // scrollDiv = (event) => {
+    //     this.chatContent.scrollBy(event.deltaX, event.deltaY);
+    // };
 
     loadPreviousChat = () => {
         this.previousChatUpdate = true;
@@ -535,54 +638,78 @@ class ChatContent extends React.Component {
         const messages = this.createMessagesWithDateObjects();
 
         return (
-            <div
-                className="chat-content"
-                ref={(inp) => this.chatContent = inp}
-                onScroll={this.onScroll}
-            >
-                {
-                    messages.map(message => {
-                        if (message.unreadPointer) {
-                            return (
-                                <div
-                                    key="unreadPointer"
-                                    className="chat-line"
-                                >
-                                    <div
-                                        className="chat-unread_messages"
-                                        ref={(div) => {
-                                            this.unreadPointer = div;
-                                        }}
-                                    >
-                                        Unread Messages
-                                    </div>
-                                </div>
-                            )
-                        }
-                        if (message.dateMarker) {
-                            return (
-                                <DateMarker
-                                    key={`date-${message.dateMarker}`}
-                                    date={message.dateMarker}
-                                />
-                            )
-                        }
-                        return (
-                            <ChatLine
-                                message={message}
-                                key={message.id}
-                                chatType={this.props.chatType}
-                            />
-                        );
-                    })
-                }
+            <>
                 <div
-                    ref={(div) => {
-                        this.endPointer = div;
-                    }}
+                    className="chat-content"
+                    ref={(inp) => this.chatContent = inp}
+                    onScroll={this.onScroll}
                 >
+                    {
+                        this.props.loadingMessages && (
+                            <div className="chat-line loading">
+                                <Loading/>
+                            </div>
+                        )
+                    }
+                    {
+                        messages.map(message => {
+                            if (message.unreadPointer) {
+                                return (
+                                    <div
+                                        key="unreadPointer"
+                                        className="chat-line"
+                                    >
+                                        <div
+                                            className="chat-unread_messages"
+                                            ref={(div) => {
+                                                this.unreadPointer = div;
+                                            }}
+                                        >
+                                            Unread Messages
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            if (message.dateMarker) {
+                                return (
+                                    <DateMarker
+                                        key={`date-${message.dateMarker}`}
+                                        date={message.dateMarker}
+                                    />
+                                )
+                            }
+                            return (
+                                <ChatLine
+                                    message={message}
+                                    key={message.id}
+                                    chatType={this.props.chatType}
+                                    // onLoad={this.scrollToEndPointer}
+                                />
+                            );
+                        })
+                    }
+                    <div
+                        ref={(div) => {
+                            this.endPointer = div;
+                        }}
+                    >
+                    </div>
                 </div>
-            </div>
+                {/*<div*/}
+                {/*    className="chat-content-overflow_control_wrap"*/}
+                {/*    onWheel={this.scrollDiv}*/}
+                {/*>*/}
+                {/*    {*/}
+                {/*        !this.autoScroll &&*/}
+                {/*        <ChatNewMessagesIcon*/}
+                {/*            unread={this.props.unreadMsgCount}*/}
+                {/*            onClick={() => {*/}
+                {/*                this.unreadPointer.scrollIntoView()*/}
+                {/*            }}*/}
+                {/*        />*/}
+                {/*    }*/}
+                {/*</div>*/}
+            </>
         );
     }
 }
@@ -658,6 +785,9 @@ class MessageInputWithURLMetadata extends React.Component {
 class FileButton extends React.Component {
     static propTypes = {
         onFileSelected: PropTypes.func,
+        maxFileSize: PropTypes.number,
+        accept: PropTypes.string,
+        notify: PropTypes.func,
     };
 
     constructor(props) {
@@ -676,9 +806,12 @@ class FileButton extends React.Component {
         if (selectedFile) {
             console.log("File Selected");
             console.log(selectedFile);
-            if (selectedFile.size > 25 * 1024 * 1024) {
-                console.log("File Size limit exceeded");
-                return;
+            if (this.props.maxFileSize) {
+                if (selectedFile.size > this.props.maxFileSize) {
+                    console.log("File Size limit exceeded");
+                    this.props.notify(`Max File Size limit exceeded ${this.props.maxFileSize} bytes`);
+                    return;
+                }
             }
             onFileSelected(selectedFile);
         } else {
@@ -688,7 +821,7 @@ class FileButton extends React.Component {
     };
 
     render() {
-        const {onFileSelected, ...remainingProps} = this.props;
+        const {onFileSelected, accept, ...remainingProps} = this.props;
         return (
             <>
                 <button {...remainingProps} onClick={this.onButtonClick}>
@@ -699,6 +832,7 @@ class FileButton extends React.Component {
                     ref={this.fileSelector}
                     style={{display: "none"}}
                     onChange={this.fileSelected}
+                    accept={accept}
                 />
             </>
         );
@@ -710,6 +844,7 @@ class AttachmentsButton extends React.Component {
         onAttachment: PropTypes.func,
         fileSelected: PropTypes.bool,
         fileType: PropTypes.string,
+        notify: PropTypes.func,
     };
 
     state = {
@@ -742,6 +877,16 @@ class AttachmentsButton extends React.Component {
         }
     };
 
+    documentSelected = (file) => {
+        const {onAttachment} = this.props;
+
+        if (file) {
+            onAttachment(file, "document");
+        } else {
+            onAttachment(null, null);
+        }
+    };
+
     cancelAttachment = () => {
         const {onAttachment} = this.props;
         onAttachment(null, null);
@@ -752,6 +897,9 @@ class AttachmentsButton extends React.Component {
         const chatFileSelected = fileSelected ? "chat-file-selected" : "";
         const chatImageSelected = fileType === "image" ? "chat-file-selected" : "";
         const chatVideoSelected = fileType === "video" ? "chat-file-selected" : "";
+        const chatDocumentSelected = fileType === "document" ? "chat-file-selected" : "";
+
+        const maxFileSize = 24 * 1024 * 1024;
 
         return (
             <span style={{position: "relative"}}>
@@ -763,12 +911,19 @@ class AttachmentsButton extends React.Component {
                     this.state.showAttachmentsPanel &&
                     <div className="chat-attachments-panel">
                         <FileButton type="button" className={`chat-attachment-button ${chatImageSelected}`}
-                                    onFileSelected={this.imageSelected}>
+                                    maxFileSize={maxFileSize}
+                                    onFileSelected={this.imageSelected} accept="image/*" notify={this.props.notify}>
                             <i className="fas fa-image"> </i>
                         </FileButton>
                         <FileButton type="button" className={`chat-attachment-button ${chatVideoSelected}`}
-                                    onFileSelected={this.videoSelected}>
+                                    maxFileSize={maxFileSize}
+                                    onFileSelected={this.videoSelected} accept="video/*" notify={this.props.notify}>
                             <i className="fas fa-video"> </i>
+                        </FileButton>
+                        <FileButton type="button" className={`chat-attachment-button ${chatDocumentSelected}`}
+                                    maxFileSize={maxFileSize}
+                                    onFileSelected={this.documentSelected} notify={this.props.notify}>
+                            <i className="fas fa-file"> </i>
                         </FileButton>
                         <button type="button" className="chat-attachment-button" onClick={this.cancelAttachment}>
                             <i className="fas fa-times"> </i>
@@ -783,6 +938,7 @@ class AttachmentsButton extends React.Component {
 class ChatInput extends React.Component {
     static propTypes = {
         updateMessage: PropTypes.func,
+        notify: PropTypes.func,
     };
 
     state = {
@@ -826,8 +982,14 @@ class ChatInput extends React.Component {
     };
 
     onMessageSubmit = (event) => {
+        const maxTextLength = 10240;
+
         event.preventDefault();
         if (this.state.type === "text" && this.state.message.match(utils.onlySpacesRegex)) {
+            return;
+        }
+        if (this.state.message.length > maxTextLength) {
+            this.props.notify("Message too long. Max limit reached only 10240 characters allowed.");
             return;
         }
         const {updateMessage} = this.props;
@@ -835,7 +997,7 @@ class ChatInput extends React.Component {
         let message = {
             data: this.state.message,
             type: this.state.type,
-            id: uuid.v4(),
+            id: -100,
             by: 0,
             time: Date.now(),
             read: 0,
@@ -877,6 +1039,7 @@ class ChatInput extends React.Component {
                         onAttachment={this.onAttachment}
                         fileSelected={this.state.fileSelected}
                         fileType={this.state.type}
+                        notify={this.props.notify}
                     >
                         <i className="fas fa-paperclip"> </i>
                     </AttachmentsButton>
@@ -892,13 +1055,15 @@ class ChatInput extends React.Component {
 class ChatBody extends React.Component {
     static propTypes = {
         currentChat: PropTypes.object,
-        currentChatId: PropTypes.number,
+        currentChatId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         updateMessage: PropTypes.func,
         closeCurrentChat: PropTypes.func,
+        unreadMsgCount: PropTypes.number,
         removeUnreadPointer: PropTypes.func,
         loadPreviousChat: PropTypes.func,
         updateScrollerPosition: PropTypes.func,
         scrollerPosition: PropTypes.number,
+        notify: PropTypes.func,
     };
 
     state = {
@@ -939,6 +1104,7 @@ class ChatBody extends React.Component {
                     hasPreviousChat={currentChat.hasPreviousChat}
                     currentChatId={currentChatId}
                     messages={currentChat.messages}
+                    unreadMsgCount={this.props.unreadMsgCount}
                     removeUnreadPointer={this.props.removeUnreadPointer}
                     loadPreviousChat={this.props.loadPreviousChat}
                     chatType={currentChat.chatType}
@@ -947,9 +1113,12 @@ class ChatBody extends React.Component {
                     newMessageByMe={this.state.newMessageByMe}
                     newMessage={currentChat.newMessage}
                     cleanNewMessageByMe={this.cleanNewMessageByMe}
+                    loadingMessages={currentChat.loadingMessages}
+                    notify={this.props.notify}
                 />
                 <ChatInput
                     updateMessage={this.updateMessage}
+                    notify={this.props.notify}
                 />
             </div>
         )
@@ -965,6 +1134,9 @@ export default class Chat extends React.Component {
         removeUnreadPointer: PropTypes.func,
         loadPreviousChat: PropTypes.func,
         markAsReadCurrentChat: PropTypes.func,
+        searchPerson: PropTypes.func,
+        noLoadingList: PropTypes.func,
+        notify: PropTypes.func,
     };
 
     state = {
@@ -1000,21 +1172,27 @@ export default class Chat extends React.Component {
         return (
             <div className="chat">
                 <ChatList
+                    loadingList={this.props.chat.loadingList}
                     chat={this.props.chat}
                     updateCurrentChat={this.props.updateCurrentChat}
+                    searchPerson={this.props.searchPerson}
+                    more={this.props.chat.more}
+                    noLoadingList={this.props.noLoadingList}
                 />
                 {
-                    currentChatId &&
+                    currentChatId && currentChat &&
                     <ChatBody
                         currentChat={currentChat}
                         currentChatId={currentChatId}
                         updateMessage={this.props.updateMessage}
                         closeCurrentChat={this.props.closeCurrentChat}
+                        unreadMsgCount={currentChat.unread}
                         removeUnreadPointer={this.props.removeUnreadPointer}
                         loadPreviousChat={this.props.loadPreviousChat}
                         updateScrollerPosition={this.updateScrollerPosition}
                         scrollerPosition={this.state.scrollerPositions[currentChatId]}
                         key={`chat-${currentChatId}`}
+                        notify={this.props.notify}
                     />
                 }
             </div>

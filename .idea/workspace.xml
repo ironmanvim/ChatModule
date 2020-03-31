@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="updated autoScroll bugs">
+    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="added ChatLdocument">
+      <change afterPath="$PROJECT_DIR$/src/Components/Loading.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.bitmap" beforeDir="false" afterPath="$PROJECT_DIR$/.bitmap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/ironmanvim.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/ironmanvim.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Chat/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/FullScreenView/Assets/css/full-screen.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FullScreenView/Assets/css/full-screen.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -33,6 +42,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="JavaScript&#10;HTML" />
     <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="last.edited.regexp" value="http://www.google.com/w.txt" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../bit-react-tutorial" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -163,7 +173,42 @@
       <workItem from="1579196502755" duration="15000" />
       <workItem from="1579247443490" duration="9092000" />
       <workItem from="1579361289801" duration="14910000" />
-      <workItem from="1579413235960" duration="4355000" />
+      <workItem from="1579413235960" duration="10789000" />
+      <workItem from="1579496293189" duration="733000" />
+      <workItem from="1579518263073" duration="11358000" />
+      <workItem from="1579628204231" duration="2782000" />
+      <workItem from="1579666702189" duration="6798000" />
+      <workItem from="1579706191969" duration="386000" />
+      <workItem from="1579707179416" duration="1973000" />
+      <workItem from="1579750880884" duration="1441000" />
+      <workItem from="1579962689050" duration="2781000" />
+      <workItem from="1580890106562" duration="2413000" />
+      <workItem from="1581334883192" duration="670000" />
+      <workItem from="1581433007167" duration="2288000" />
+      <workItem from="1581579414962" duration="2141000" />
+      <workItem from="1581623901919" duration="1276000" />
+      <workItem from="1581630230547" duration="633000" />
+      <workItem from="1581654946340" duration="3136000" />
+      <workItem from="1581689109781" duration="807000" />
+      <workItem from="1581739970704" duration="10029000" />
+      <workItem from="1581782259038" duration="3753000" />
+      <workItem from="1581826630909" duration="728000" />
+      <workItem from="1581925894574" duration="4859000" />
+      <workItem from="1582552690248" duration="597000" />
+      <workItem from="1583653592887" duration="596000" />
+      <workItem from="1583909846044" duration="11014000" />
+      <workItem from="1584863674366" duration="2438000" />
+      <workItem from="1584969943880" duration="678000" />
+      <workItem from="1585024755860" duration="654000" />
+      <workItem from="1585026139398" duration="53000" />
+      <workItem from="1585140122256" duration="1873000" />
+      <workItem from="1585291196962" duration="13954000" />
+      <workItem from="1585326051100" duration="2856000" />
+      <workItem from="1585333000661" duration="3528000" />
+      <workItem from="1585375665909" duration="4687000" />
+      <workItem from="1585544906620" duration="1622000" />
+      <workItem from="1585571423431" duration="3717000" />
+      <workItem from="1585631995529" duration="2308000" />
     </task>
     <task id="LOCAL-00001" summary="Chat v1.0.0 Commit">
       <created>1577612140637</created>
@@ -228,7 +273,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579415514243</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="problems with chat autoScroll solved">
+      <created>1579420070048</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1579420070048</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,6 +310,7 @@
     <MESSAGE value="updated attachments uploader" />
     <MESSAGE value="updated autoScroll" />
     <MESSAGE value="updated autoScroll bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated autoScroll bugs" />
+    <MESSAGE value="problems with chat autoScroll solved" />
+    <option name="LAST_COMMIT_MESSAGE" value="problems with chat autoScroll solved" />
   </component>
 </project>
