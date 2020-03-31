@@ -377,10 +377,10 @@ class ChatLine extends React.Component {
         let textAndLinks = utils.linksSplitter(text);
         let link = null;
 
-        return [textAndLinks.map(item => {
+        return [textAndLinks.map((item, i) => {
             if (item.type === "link") {
                 link = item.word;
-                return <a href={item.word}>{item.word}</a>;
+                return <a key={i} href={item.word}>{item.word}</a>;
             }
             return item.word;
         }), link];
@@ -523,7 +523,7 @@ class ChatContent extends React.Component {
         newMessage: PropTypes.bool,
         unreadMsgCount: PropTypes.number,
         loadingMessages: PropTypes.bool,
-        notify: PropTypes.bool
+        notify: PropTypes.func,
     };
 
     constructor(props) {
@@ -809,7 +809,7 @@ class FileButton extends React.Component {
             if (this.props.maxFileSize) {
                 if (selectedFile.size > this.props.maxFileSize) {
                     console.log("File Size limit exceeded");
-                    this.props.notify(`Max File Size limit exceeded ${this.props.maxFileSize} bytes`);
+                    this.props.notify(`Max File Size limit exceeded ${this.props.maxFileSize / (1024 * 1024)} MB`);
                     return;
                 }
             }
@@ -893,7 +893,7 @@ class AttachmentsButton extends React.Component {
     };
 
     render() {
-        const {className, onAttachment, fileSelected, fileType, ...buttonProps} = this.props;
+        const {className, onAttachment, fileSelected, fileType, notify, ...buttonProps} = this.props;
         const chatFileSelected = fileSelected ? "chat-file-selected" : "";
         const chatImageSelected = fileType === "image" ? "chat-file-selected" : "";
         const chatVideoSelected = fileType === "video" ? "chat-file-selected" : "";
@@ -912,17 +912,17 @@ class AttachmentsButton extends React.Component {
                     <div className="chat-attachments-panel">
                         <FileButton type="button" className={`chat-attachment-button ${chatImageSelected}`}
                                     maxFileSize={maxFileSize}
-                                    onFileSelected={this.imageSelected} accept="image/*" notify={this.props.notify}>
+                                    onFileSelected={this.imageSelected} accept="image/*" notify={notify}>
                             <i className="fas fa-image"> </i>
                         </FileButton>
                         <FileButton type="button" className={`chat-attachment-button ${chatVideoSelected}`}
                                     maxFileSize={maxFileSize}
-                                    onFileSelected={this.videoSelected} accept="video/*" notify={this.props.notify}>
+                                    onFileSelected={this.videoSelected} accept="video/*" notify={notify}>
                             <i className="fas fa-video"> </i>
                         </FileButton>
                         <FileButton type="button" className={`chat-attachment-button ${chatDocumentSelected}`}
                                     maxFileSize={maxFileSize}
-                                    onFileSelected={this.documentSelected} notify={this.props.notify}>
+                                    onFileSelected={this.documentSelected} notify={notify}>
                             <i className="fas fa-file"> </i>
                         </FileButton>
                         <button type="button" className="chat-attachment-button" onClick={this.cancelAttachment}>

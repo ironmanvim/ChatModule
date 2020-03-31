@@ -419,6 +419,7 @@ class App extends React.Component {
                         markAsReadCurrentChat={this.markAsReadCurrentChat}
                         searchPerson={this.searchPerson}
                         noLoadingList={this.noLoadingList}
+                        notify={(data) => console.log(data)}
                     />
                     {/*<URLMetadata url="https://www.whatsapp.com"/>*/}
                 </div>

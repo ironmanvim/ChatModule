@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="added ChatLdocument">
-      <change afterPath="$PROJECT_DIR$/src/Components/Loading.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.bitmap" beforeDir="false" afterPath="$PROJECT_DIR$/.bitmap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/ironmanvim.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/ironmanvim.xml" afterDir="false" />
+    <list default="true" id="75d2f707-359f-483f-8f47-80fc8ff560b2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/Assets/css/chat.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/Chat/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Chat/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/FullScreenView/Assets/css/full-screen.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FullScreenView/Assets/css/full-screen.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/FullScreenView/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/js/utils.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -208,7 +199,7 @@
       <workItem from="1585375665909" duration="4687000" />
       <workItem from="1585544906620" duration="1622000" />
       <workItem from="1585571423431" duration="3717000" />
-      <workItem from="1585631995529" duration="2308000" />
+      <workItem from="1585631995529" duration="6022000" />
     </task>
     <task id="LOCAL-00001" summary="Chat v1.0.0 Commit">
       <created>1577612140637</created>
@@ -280,7 +271,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579420070048</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="updated">
+      <created>1585634559179</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1585634559179</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -311,6 +309,7 @@
     <MESSAGE value="updated autoScroll" />
     <MESSAGE value="updated autoScroll bugs" />
     <MESSAGE value="problems with chat autoScroll solved" />
-    <option name="LAST_COMMIT_MESSAGE" value="problems with chat autoScroll solved" />
+    <MESSAGE value="updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated" />
   </component>
 </project>
