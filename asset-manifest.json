@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/ChatModule/static/css/main.d22de51f.chunk.css",
-    "main.js": "/ChatModule/static/js/main.91ddc71e.chunk.js",
-    "main.js.map": "/ChatModule/static/js/main.91ddc71e.chunk.js.map",
+    "main.css": "/ChatModule/static/css/main.cee90c91.chunk.css",
+    "main.js": "/ChatModule/static/js/main.c6fe648c.chunk.js",
+    "main.js.map": "/ChatModule/static/js/main.c6fe648c.chunk.js.map",
     "runtime-main.js": "/ChatModule/static/js/runtime-main.340311ce.js",
     "runtime-main.js.map": "/ChatModule/static/js/runtime-main.340311ce.js.map",
     "static/css/2.59f4f2a6.chunk.css": "/ChatModule/static/css/2.59f4f2a6.chunk.css",
-    "static/js/2.b4ddb40a.chunk.js": "/ChatModule/static/js/2.b4ddb40a.chunk.js",
-    "static/js/2.b4ddb40a.chunk.js.map": "/ChatModule/static/js/2.b4ddb40a.chunk.js.map",
+    "static/js/2.32c2de52.chunk.js": "/ChatModule/static/js/2.32c2de52.chunk.js",
+    "static/js/2.32c2de52.chunk.js.map": "/ChatModule/static/js/2.32c2de52.chunk.js.map",
     "index.html": "/ChatModule/index.html",
-    "precache-manifest.facbf49ac5b5f8e87f32560928097cd0.js": "/ChatModule/precache-manifest.facbf49ac5b5f8e87f32560928097cd0.js",
+    "precache-manifest.35a689d33578f4c440e1c4d80ddcf404.js": "/ChatModule/precache-manifest.35a689d33578f4c440e1c4d80ddcf404.js",
     "service-worker.js": "/ChatModule/service-worker.js",
     "static/css/2.59f4f2a6.chunk.css.map": "/ChatModule/static/css/2.59f4f2a6.chunk.css.map",
-    "static/css/main.d22de51f.chunk.css.map": "/ChatModule/static/css/main.d22de51f.chunk.css.map",
-    "static/js/2.b4ddb40a.chunk.js.LICENSE": "/ChatModule/static/js/2.b4ddb40a.chunk.js.LICENSE",
+    "static/css/main.cee90c91.chunk.css.map": "/ChatModule/static/css/main.cee90c91.chunk.css.map",
+    "static/js/2.32c2de52.chunk.js.LICENSE": "/ChatModule/static/js/2.32c2de52.chunk.js.LICENSE",
     "static/media/Avatar.png": "/ChatModule/static/media/Avatar.037763eb.png",
     "static/media/all.css": "/ChatModule/static/media/fa-solid-900.a8eedaad.woff",
     "static/media/trial.mp4": "/ChatModule/static/media/trial.24867704.mp4",
@@ -22,8 +22,8 @@
   "entrypoints": [
     "static/js/runtime-main.340311ce.js",
     "static/css/2.59f4f2a6.chunk.css",
-    "static/js/2.b4ddb40a.chunk.js",
-    "static/css/main.d22de51f.chunk.css",
-    "static/js/main.91ddc71e.chunk.js"
+    "static/js/2.32c2de52.chunk.js",
+    "static/css/main.cee90c91.chunk.css",
+    "static/js/main.c6fe648c.chunk.js"
   ]
 }
